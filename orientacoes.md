@@ -4,7 +4,7 @@ Este repositório contém o site do preparatório CCNA da Profa. Maristela Olive
 
 ## Visão geral
 
-- Site estático em arquivos separados e formatados, para facilitar a manutenção e o estudo do código pela professora: `index.html` e `treinos.html` (estrutura), `css/estilo.css` (visual, compartilhado), `js/dados.js` e `js/questoes.js` (conteúdo), `js/site.js` e `js/treinos.js` (funções). Não há build, framework nem dependências.
+- Site estático em arquivos separados e formatados, para facilitar a manutenção e o estudo do código pela professora: `index.html` e `treinos.html` (estrutura), `css/ccna.css` (componentes do preparatório; as cores, as fontes, a barra do topo e o fundo vêm de `assets/css/estilo.css` e `neon.css`, comuns a todos os sites da Stela), `js/dados.js` e `js/questoes.js` (conteúdo), `js/site.js` e `js/treinos.js` (funções). Não há build, framework nem dependências.
 - Será publicado no GitHub Pages a partir da branch `main`, na raiz.
 - Idioma: português do Brasil. Público: alunos do preparatório (matrícula aberta à comunidade, não necessariamente alunos da faculdade).
 - `gerador-area-turma.html` é uma ferramenta **local** da professora. **Não deve ser publicada** (mantê-la fora do repositório publicado ou no `.gitignore`).
@@ -12,7 +12,7 @@ Este repositório contém o site do preparatório CCNA da Profa. Maristela Olive
 ## Estrutura dos arquivos
 
 1. `index.html`: só a estrutura. Seções, nesta ordem: topo fixo, hero (terminal com traceroute), Próximo encontro, Cronograma, Meu progresso, Vídeos, Treinos, Prova e voucher, Área da turma (protegida), Links. A seção Treinos é só um cartão com link para `treinos.html`. Carrega o CSS e os dois scripts com `defer`, nessa ordem: `dados.js` antes de `site.js`.
-2. `css/estilo.css`: tokens de cor em `:root` e todo o CSS, dividido em seções numeradas com índice no topo. Sem `style=""` no HTML.
+2. `css/ccna.css`: os tokens antigos (`--noite`, `--itn`...) apontam para o visual comum, e todo o CSS dos componentes, dividido em seções numeradas com índice no topo. Sem `style=""` no HTML.
 3. `js/dados.js` (**edite aqui**). Quase toda atualização de conteúdo acontece só nesse arquivo:
    - `LINKS_TURMA`: links públicos (NetAcad, Binary Game, Pearson VUE).
    - `ENCONTROS`: data (AAAA-MM-DD), curso, título, laboratório, desafio e tarefas da quinzena de cada sábado.
@@ -46,18 +46,22 @@ Este repositório contém o site do preparatório CCNA da Profa. Maristela Olive
 - **Nunca** colocar links da turma, URLs de vídeos ou a senha em texto aberto no `index.html`, no `js/dados.js`, em commits ou em mensagens de commit.
 - A senha é trocada a cada semestre.
 
-## Identidade visual (estilo cyberpunk da professora)
+## Identidade visual (o padrão dos sites da Stela, desde outubro de 2026)
 
-- Fundo noite roxa `#0D0221`, painéis `#190A3A`, texto `#EDE7FF`, texto suave `#B3A6DA`, linhas `#3D2775`.
-- Cores de destaque por curso (como cabos de rede): ITN ciano `#05D9E8`, SRWE amarelo `#F9F002`, ENSA magenta `#FF2A6D`. Sucesso `#39FF9E`, erro `#FF5C7A`.
-- Fontes (Google Fonts): Chakra Petch (títulos e interface), IBM Plex Sans (texto), Share Tech Mono (terminal e dados).
-- Elementos característicos: título com brilho neon e glitch único ao carregar; grade synthwave e scanlines no hero; cantos cortados (`.corte`); hexágonos no cronograma; títulos de seção com `//`; assinatura `> Profa. Maristela_`.
-- Ao criar o site de outra disciplina: manter a base e trocar as cores de destaque e os dados.
+- O site segue o visual comum de todos os sites da Stela (github.com + Apple/macOS + a placa de circuito
+  dela): tema escuro por padrão com botão para o claro, botão A+ e botão "Pausar animações", fundo de placa,
+  chuva de 0 e 1 na abertura e "CCNA" em verde neon. Esses arquivos ficam em `assets/` e são cópias do portal:
+  não editar aqui.
+- Fontes: Mona Sans (títulos), Atkinson Hyperlegible Next (texto) e Atkinson Hyperlegible Mono (terminal e dados).
+- Cores de destaque por curso (como cabos de rede), em `css/ccna.css`: ITN ciano, SRWE amarelo e ENSA
+  magenta, com versões mais fechadas no tema claro.
+- Mantidos do visual antigo: hexágonos no cronograma e no memoji, títulos de seção com `//`, o terminal com
+  traceroute e a assinatura `> Profa. Maristela_`. Os cantos cortados viraram cantos arredondados.
 
 ## Regras de qualidade
 
 - Manter HTML, CSS e JavaScript em arquivos separados, sem dependências além do Google Fonts.
-- Responsivo até 360 px de largura; foco de teclado visível; respeitar `prefers-reduced-motion` (glitch, cursor e animações desligados).
+- Responsivo até 360 px de largura; foco de teclado visível; respeitar `prefers-reduced-motion` e o botão "Pausar animações" (cursor e chuva de 0 e 1 param).
 - `localStorage` e `sessionStorage` sempre dentro de `try/catch`.
 - Textos em linguagem simples, voz ativa, frases curtas, sem caixa alta em rótulos.
 - Antes de publicar, testar: próximo encontro correto, abrir e fechar encontros, marcar módulos, filtrar vídeos, senha errada e senha certa na área da turma; na página de treinos, treino de sub-redes e simulado nos dois modos (estudo e prova).
