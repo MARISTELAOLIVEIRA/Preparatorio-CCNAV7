@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Treinos CCNA · Profa. Maristela</title>
+<meta name="description" content="Simulado no estilo da prova CCNA, com feedback na hora, e treino de sub-redes.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#0D0221">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<!--
+  ============================================================
+  COMO EDITAR (Profa. Maristela)
+  - Questões do simulado: js/questoes.js.
+  - Funções desta página (simulado e sub-redes): js/treinos.js.
+  - Visual: css/estilo.css (o mesmo da página inicial).
+  ============================================================
+-->
+<link rel="stylesheet" href="css/estilo.css">
+<script src="js/questoes.js" defer></script>
+<script src="js/treinos.js" defer></script>
+</head>
+<body>
+<nav class="topo" aria-label="Seções">
+  <div class="wrap">
+    <a class="marca" href="index.html">&gt;_ CCNA</a>
+    <a href="index.html">Início</a>
+    <a href="#simulado">Simulado</a>
+    <a href="#subredes">Sub-redes</a>
+    <a href="index.html#turma">Área da turma</a>
+    <!-- Memoji da professora: o mesmo da conta Microsoft, para os alunos a reconhecerem -->
+    <span class="memoji" title="Profa. Maristela">
+      <span class="memoji-brilho"><span class="memoji-hex"><span class="memoji-rosto"><img src="assets/memoji.png" alt="Memoji da Profa. Maristela" width="48" height="48"></span></span></span>
+    </span>
+  </div>
+</nav>
+
+
+<header class="hero hero-curto">
+  <div class="wrap">
+    <h1>Treinos</h1>
+    <p class="quem">&gt; Profa. Maristela_ · Academia Cisco · Senac-DF</p>
+    <p class="sub">Questões no estilo da prova CCNA e treino de sub-redes. Treine quantas vezes quiser.</p>
+  </div>
+</header>
+
+<main>
+<section id="simulado">
+  <div class="wrap">
+    <h2>Simulado CCNA</h2>
+    <p class="intro">Questões originais no estilo da prova 200-301: uma resposta, várias respostas, associação e saídas de comando para interpretar. Como na prova, não dá para voltar a uma questão.</p>
+
+    <!-- 1. Escolher curso e modo -->
+    <form class="cartao corte sim-config" id="simConfig" novalidate>
+      <label class="sim-campo">Nome completo
+        <input id="simNome" autocomplete="name" required>
+      </label>
+      <p class="retorno no" id="simNomeErro" aria-live="polite"></p>
+
+      <label class="sim-campo">Curso
+        <select id="simCurso"></select>
+      </label>
+
+      <label class="sim-campo">Quantidade de questões
+        <select id="simQtd">
+          <option value="10">10 questões</option>
+          <option value="15" selected>15 questões</option>
+          <option value="30">30 questões</option>
+          <option value="todas">Todas do curso</option>
+        </select>
+      </label>
+
+      <fieldset class="sim-modos">
+        <legend>Modo</legend>
+        <label class="sim-modo">
+          <input type="radio" name="modo" value="estudo" checked>
+          <span><strong>Estudo</strong>Mostra se acertou e a explicação a cada resposta. Sem tempo.</span>
+        </label>
+        <label class="sim-modo">
+          <input type="radio" name="modo" value="prova">
+          <span><strong>Prova</strong>Cronômetro e resultado só no final, como na certificação.</span>
+        </label>
+      </fieldset>
+
+      <div class="acoes">
+        <button type="submit">Começar o simulado</button>
+      </div>
+    </form>
+
+    <!-- 2. Questão atual -->
+    <div class="cartao corte sim-questao" id="simQuestao" hidden>
+      <div class="sim-barra">
+        <span id="simPos"></span>
+        <span class="tag" id="simTopico"></span>
+        <span class="sim-placar" id="simPlacar"></span>
+        <span class="sim-tempo" id="simTempo" hidden></span>
+      </div>
+      <div class="sim-progresso" aria-hidden="true"><i id="simProgresso"></i></div>
+
+      <p class="sim-enunciado" id="simEnunciado"></p>
+      <pre class="sim-exibicao" id="simExibicao" hidden></pre>
+      <p id="simPkt" hidden></p>
+      <p class="placar" id="simInstrucao"></p>
+
+      <form id="simForm">
+        <div class="sim-opcoes" id="simOpcoes"></div>
+        <div class="acoes">
+          <button type="submit" id="simConfirmar">Confirmar</button>
+          <button type="button" id="simProxima" hidden>Próxima questão</button>
+          <button type="button" class="sec" id="simEncerrar">Encerrar</button>
+        </div>
+      </form>
+
+      <div class="sim-feedback" id="simFeedback" aria-live="polite"></div>
+    </div>
+
+    <!-- 3. Resultado -->
+    <div class="cartao corte sim-resultado" id="simResultado" hidden>
+      <p class="placar" id="simAluno"></p>
+      <h3 id="simNota"></h3>
+      <p class="sim-mensagem" id="simMensagem"></p>
+      <p class="placar" id="simResumo"></p>
+      <h4>Desempenho por tópico</h4>
+      <div id="simTopicos"></div>
+      <h4>Revisão das questões</h4>
+      <ol class="sim-revisao" id="simRevisao"></ol>
+      <div class="acoes">
+        <button type="button" id="simSalvarImagem">Salvar imagem do resultado</button>
+        <button type="button" class="sec" id="simCompartilhar" hidden>Compartilhar</button>
+        <button type="button" class="sec" id="simDeNovo">Fazer outro simulado</button>
+      </div>
+      <p class="placar" id="simImagemMsg" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<section id="subredes">
+  <div class="wrap">
+    <h2>Treino de sub-redes</h2>
+    <p class="intro">Descubra os dados da sub-rede de cada endereço. Cada verificação mostra na hora o que está certo.</p>
+    <div class="cartao corte" id="subnet">
+      <div class="desafio-ip" id="ipDesafio" aria-live="polite"></div>
+      <div class="campos">
+        <label>Endereço de rede<input id="sRede" inputmode="decimal" autocomplete="off"></label>
+        <label>Broadcast<input id="sBroad" inputmode="decimal" autocomplete="off"></label>
+        <label>Primeiro host<input id="sPrim" inputmode="decimal" autocomplete="off"></label>
+        <label>Último host<input id="sUlt" inputmode="decimal" autocomplete="off"></label>
+        <label>Hosts válidos<input id="sHosts" inputmode="numeric" autocomplete="off"></label>
+        <label>Máscara decimal<input id="sMasc" inputmode="decimal" autocomplete="off"></label>
+      </div>
+      <div class="acoes">
+        <button type="button" id="sVerificar">Verificar</button>
+        <button type="button" class="sec" id="sNovo">Novo endereço</button>
+        <button type="button" class="sec" id="sMostrar">Mostrar resposta</button>
+      </div>
+      <div class="retorno" id="sRetorno" aria-live="polite"></div>
+      <p class="placar" id="sPlacar"></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Preparatório CCNA · Academia Cisco da Faculdade de Tecnologia e Inovação Senac-DF · Profa. Maristela Oliveira · 2026.2</div>
+</footer>
+</body>
+</html>

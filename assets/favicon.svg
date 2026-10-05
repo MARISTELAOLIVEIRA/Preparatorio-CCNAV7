@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Favicon: ">_" neon dentro do hexágono do cronograma -->
+  <defs>
+    <filter id="neon" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.6" result="halo"/>
+      <feMerge>
+        <feMergeNode in="halo"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Hexágono: fundo noite roxa com borda ciano -->
+  <polygon points="16,3 48,3 62,32 48,61 16,61 2,32" fill="#0D0221" stroke="#05D9E8" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- ">" em magenta e "_" em amarelo -->
+  <g filter="url(#neon)">
+    <polyline points="17,20 30,32 17,44" fill="none" stroke="#FF2A6D" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter"/>
+    <rect x="33" y="40" width="15" height="6" fill="#F9F002"/>
+  </g>
+</svg>

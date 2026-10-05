@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="titulo descricao">
+  <title id="titulo">Preparatório CCNA · Profa. Maristela</title>
+  <desc id="descricao">Banner cyberpunk: título em neon sobre uma grade synthwave e um terminal com traceroute até a certificação.</desc>
+
+  <defs>
+    <!-- Brilhos do fundo: magenta à direita, ciano à esquerda -->
+    <radialGradient id="brilhoMagenta" cx="88%" cy="-10%" r="70%">
+      <stop offset="0" stop-color="#FF2A6D" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#FF2A6D" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="brilhoCiano" cx="0%" cy="60%" r="60%">
+      <stop offset="0" stop-color="#05D9E8" stop-opacity=".25"/>
+      <stop offset="1" stop-color="#05D9E8" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- A grade some aos poucos no horizonte -->
+    <linearGradient id="someGrade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="mascaraGrade">
+      <rect x="0" y="230" width="1200" height="130" fill="url(#someGrade)"/>
+    </mask>
+
+    <!-- Neon: o texto ganha um halo desfocado -->
+    <filter id="neon" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="halo"/>
+      <feMerge>
+        <feMergeNode in="halo"/>
+        <feMergeNode in="halo"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="neonFraco" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="halo"/>
+      <feMerge>
+        <feMergeNode in="halo"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Scanlines -->
+    <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="1" y="3" fill="#000" opacity=".22"/>
+    </pattern>
+
+    <style>
+      .titulo   { font: 700 76px "Chakra Petch", "Orbitron", "Segoe UI", "Helvetica Neue", Arial, sans-serif; fill: #fff; }
+      .mono     { font: 400 20px "Share Tech Mono", "SFMono-Regular", Consolas, "Courier New", monospace; }
+      .assina   { fill: #F9F002; }
+      .prompt   { fill: #FF2A6D; }
+      .suave    { fill: #B3A6DA; }
+      .ok       { fill: #39FF9E; }
+      .cursor   { animation: pisca 1s steps(1) infinite; }
+      @keyframes pisca { 50% { opacity: 0; } }
+      @media (prefers-reduced-motion: reduce) { .cursor { animation: none; } }
+    </style>
+  </defs>
+
+  <!-- Fundo -->
+  <rect width="1200" height="360" fill="#0D0221"/>
+  <rect width="1200" height="360" fill="url(#brilhoMagenta)"/>
+  <rect width="1200" height="360" fill="url(#brilhoCiano)"/>
+
+  <!-- Grade synthwave em perspectiva -->
+  <g mask="url(#mascaraGrade)" stroke="#FF2A6D" stroke-opacity=".55" stroke-width="1.5">
+    <line x1="0" y1="240" x2="1200" y2="240"/>
+    <line x1="0" y1="250" x2="1200" y2="250"/>
+    <line x1="0" y1="263" x2="1200" y2="263"/>
+    <line x1="0" y1="280" x2="1200" y2="280"/>
+    <line x1="0" y1="302" x2="1200" y2="302"/>
+    <line x1="0" y1="330" x2="1200" y2="330"/>
+    <line x1="600" y1="240" x2="600" y2="360"/>
+    <line x1="560" y1="240" x2="440" y2="360"/>
+    <line x1="520" y1="240" x2="280" y2="360"/>
+    <line x1="480" y1="240" x2="120" y2="360"/>
+    <line x1="440" y1="240" x2="-40" y2="360"/>
+    <line x1="400" y1="240" x2="-200" y2="360"/>
+    <line x1="640" y1="240" x2="760" y2="360"/>
+    <line x1="680" y1="240" x2="920" y2="360"/>
+    <line x1="720" y1="240" x2="1080" y2="360"/>
+    <line x1="760" y1="240" x2="1240" y2="360"/>
+    <line x1="800" y1="240" x2="1400" y2="360"/>
+  </g>
+
+  <!-- Título com neon ciano e "sombra" magenta deslocada -->
+  <text x="62" y="128" class="titulo" textLength="590" lengthAdjust="spacingAndGlyphs" opacity=".85" style="fill:#FF2A6D">Preparatório CCNA</text>
+  <text x="58" y="126" class="titulo" textLength="590" lengthAdjust="spacingAndGlyphs" filter="url(#neon)" style="fill:#fff; stroke:#05D9E8; stroke-width:1.5">Preparatório CCNA</text>
+
+  <text x="60" y="172" class="mono assina" filter="url(#neonFraco)">&gt; Profa. Maristela_ · Academia Cisco · Senac-DF</text>
+
+  <!-- Três cabos: ITN, SRWE e ENSA -->
+  <g filter="url(#neonFraco)">
+    <rect x="60"  y="196" width="150" height="6" fill="#05D9E8"/>
+    <rect x="218" y="196" width="150" height="6" fill="#F9F002"/>
+    <rect x="376" y="196" width="150" height="6" fill="#FF2A6D"/>
+  </g>
+
+  <!-- Terminal -->
+  <g transform="translate(700 40)">
+    <path d="M0 0 H442 L460 18 V230 H18 L0 212 Z" fill="#090218" fill-opacity=".92" stroke="#05D9E8" stroke-width="1.5"/>
+    <rect x="18" y="16" width="11" height="11" fill="#FF2A6D"/>
+    <rect x="35" y="16" width="11" height="11" fill="#3D2775"/>
+    <rect x="52" y="16" width="11" height="11" fill="#3D2775"/>
+
+    <text x="18" y="62" class="mono"><tspan class="prompt">aluno#</tspan><tspan fill="#EDE7FF"> traceroute ccna</tspan></text>
+    <text x="18" y="96"  class="mono" fill="#EDE7FF">1  ITN   <tspan class="suave">17 módulos</tspan></text>
+    <text x="18" y="126" class="mono" fill="#EDE7FF">2  SRWE  <tspan class="suave">16 módulos</tspan></text>
+    <text x="18" y="156" class="mono" fill="#EDE7FF">3  ENSA  <tspan class="suave">14 módulos</tspan></text>
+    <text x="18" y="186" class="mono ok" filter="url(#neonFraco)">4  CCNA  você chegou!</text>
+    <text x="18" y="214" class="mono"><tspan class="prompt">aluno#</tspan><tspan> </tspan><tspan class="cursor" fill="#05D9E8">█</tspan></text>
+  </g>
+
+  <!-- Scanlines por cima de tudo -->
+  <rect width="1200" height="360" fill="url(#scanlines)"/>
+</svg>
