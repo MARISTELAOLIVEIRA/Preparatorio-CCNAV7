@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Preparatório CCNA · Profa. Maristela</title>
+<meta name="description" content="Tudo do preparatório CCNA em um só lugar: cronograma, vídeos, links, treinos e caminho até a prova.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#0D0221">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<!--
+  ============================================================
+  COMO EDITAR (Profa. Maristela)
+  - Estrutura da página (seções): este arquivo.
+  - Visual (cores, fontes, layout): css/estilo.css.
+  - Conteúdo (encontros, módulos, vídeos, perguntas, links): js/dados.js.
+  - Funções da página: js/site.js.
+  - Área da turma (Teams, Moodle, WhatsApp e links dos vídeos) é protegida por senha.
+    Para criar ou trocar a senha e os links, abra o arquivo gerador-area-turma.html,
+    preencha, clique em Gerar e cole o resultado em AREA_TURMA, no js/dados.js.
+  ============================================================
+-->
+<link rel="stylesheet" href="css/estilo.css">
+<script src="js/dados.js" defer></script>
+<script src="js/site.js" defer></script>
+</head>
+<body>
+<nav class="topo" aria-label="Seções">
+  <div class="wrap">
+    <b>&gt;_ CCNA</b>
+    <a href="#proximo">Próximo encontro</a>
+    <a href="#trilha">Cronograma</a>
+    <a href="#cursos">Meu progresso</a>
+    <a href="#videos">Vídeos</a>
+    <a href="treinos.html">Treinos</a>
+    <a href="#prova">Prova e voucher</a>
+    <a href="#turma">Área da turma</a>
+    <a href="#links">Links</a>
+    <!-- Memoji da professora: o mesmo da conta Microsoft, para os alunos a reconhecerem -->
+    <span class="memoji" title="Profa. Maristela">
+      <span class="memoji-brilho"><span class="memoji-hex"><span class="memoji-rosto"><img src="assets/memoji.png" alt="Memoji da Profa. Maristela" width="48" height="48"></span></span></span>
+    </span>
+  </div>
+</nav>
+
+
+<header class="hero">
+  <div class="wrap grade">
+    <div>
+      <h1 class="glitch">Preparatório CCNA</h1>
+      <p class="quem">&gt; Profa. Maristela_ · Academia Cisco · Senac-DF</p>
+      <p class="sub">Teoria em casa, prática ao vivo no Teams. Tudo o que você precisa até a prova, em um só lugar.</p>
+      <div class="botoes">
+        <a class="btn" href="#proximo">Ver o próximo encontro</a>
+        <a class="btn sec" href="https://www.netacad.com/" target="_blank" rel="noopener">Abrir a NetAcad</a>
+      </div>
+      <div class="cabos" aria-hidden="true"><span class="itn"></span><span class="srwe"></span><span class="ensa"></span></div>
+    </div>
+    <div class="terminal corte" role="img" aria-label="Simulação de traceroute mostrando o caminho: Introduction to Networks, Switching Routing and Wireless Essentials, Enterprise Networking Security and Automation e certificação CCNA">
+      <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div><span class="p">Maristela#</span> traceroute ccna.certificacao</div>
+      <div class="aviso">Rastreando a rota até você, 4 saltos no máximo</div>
+      <div id="hops"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="proximo">
+  <div class="wrap">
+    <h2>Próximo encontro</h2>
+    <p class="intro">Sábados alternados, das 8h30 às 11h50, ao vivo no Teams. Antes do encontro, faça os módulos e as tarefas da quinzena na NetAcad.</p>
+    <div class="proximo corte" id="cartaoProximo"></div>
+  </div>
+</section>
+
+<section id="trilha">
+  <div class="wrap">
+    <h2>Cronograma do semestre</h2>
+    <p class="intro">Toque em um encontro para ver o laboratório, o desafio e o que estudar na quinzena. A cor indica o curso: ciano para o ITN, amarelo para o SRWE e magenta para o ENSA.</p>
+    <ol class="trilha" id="listaTrilha"></ol>
+  </div>
+</section>
+
+<section id="cursos">
+  <div class="wrap">
+    <h2>Meu progresso nos três cursos</h2>
+    <p class="intro">Marque os módulos que você já concluiu na NetAcad. O progresso fica salvo só neste navegador.</p>
+    <div class="cursos" id="cursos-lista"></div>
+  </div>
+</section>
+
+<section id="videos">
+  <div class="wrap">
+    <h2>Vídeos de apoio</h2>
+    <p class="intro">Pílulas de 8 a 12 minutos com o essencial de cada módulo, demonstração no Packet Tracer e as pegadinhas de prova. Os vídeos vão sair aos poucos. Enquanto um vídeo não sai, a gravação do encontro no Teams cobre o conteúdo.</p>
+    <div class="filtros" role="group" aria-label="Filtrar vídeos por curso">
+      <button type="button" data-f="todos" aria-pressed="true">Todos</button>
+      <button type="button" data-f="ITN" aria-pressed="false">ITN</button>
+      <button type="button" data-f="SRWE" aria-pressed="false">SRWE</button>
+      <button type="button" data-f="ENSA" aria-pressed="false">ENSA</button>
+    </div>
+    <ul class="videos" id="listaVideos"></ul>
+  </div>
+</section>
+
+<section id="treinos">
+  <div class="wrap">
+    <h2>Treinos</h2>
+    <div class="cartao corte cartao-link">
+      <div>
+        <h3>Simulado CCNA e treino de sub-redes</h3>
+        <p>Questões no estilo da prova, com feedback a cada resposta ou com cronômetro, como na certificação.</p>
+      </div>
+      <a class="btn" href="treinos.html">Abrir os treinos</a>
+    </div>
+  </div>
+</section>
+
+<section id="prova">
+  <div class="wrap">
+    <h2>Da NetAcad até a prova</h2>
+    <p class="intro">Ao concluir o preparatório, você recebe um voucher. Este é o caminho para usá-lo bem.</p>
+    <ol class="passos">
+      <li><h3>Conclua os três cursos</h3>Exames finais do ITN, do SRWE e do ENSA, com as avaliações práticas no Packet Tracer.</li>
+      <li><h3>Crie as contas</h3>Conta na Cisco para certificações e conta na Pearson VUE, que aplica a prova.</li>
+      <li><h3>Use o voucher</h3>Insira o código no agendamento. Confira a validade e não compartilhe o código.</li>
+      <li><h3>Escolha o formato</h3>Presencial em centro credenciado ou online em casa, com câmera, documento com foto e ambiente silencioso.</li>
+      <li><h3>Faça um simulado final</h3>Refaça o simulado do último encontro e revise os pontos fracos do seu mapa individual.</li>
+      <li><h3>Divulgue sua conquista</h3>Compartilhe o badge digital no LinkedIn e no currículo.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="turma">
+  <div class="wrap">
+    <h2>Área da turma</h2>
+    <p class="intro">Links do Teams, do Moodle e dos vídeos, só para alunos matriculados. Use a senha informada no primeiro encontro.</p>
+    <form class="cartao corte cofre" id="cofreForm" autocomplete="off">
+      <label for="cofreSenha">Senha da turma</label>
+      <div class="linha-senha"><input id="cofreSenha" type="password" required><button type="submit">Entrar</button></div>
+      <p class="retorno" id="cofreMsg" aria-live="polite"></p>
+    </form>
+    <div class="links" id="cofreLinks" hidden></div>
+  </div>
+</section>
+
+<section id="links">
+  <div class="wrap">
+    <h2>Links da turma</h2>
+    <div class="links" id="listaLinks"></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Preparatório CCNA · Academia Cisco da Faculdade de Tecnologia e Inovação Senac-DF · Profa. Maristela Oliveira · 2026.2</div>
+</footer>
+
+</body>
+</html>
