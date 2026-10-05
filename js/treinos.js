@@ -483,7 +483,7 @@ function finalizar(motivo) {
 
   desempenho.forEach(({ topico, certos, total: totalTopico }) => {
     const linha = criar("div", "sim-topico");
-    const barra = criar("div", "barra");
+    const barra = criar("div", "medidor");
     const preenchido = criar("i");
     preenchido.style.width = (certos / totalTopico) * 100 + "%";
     barra.appendChild(preenchido);

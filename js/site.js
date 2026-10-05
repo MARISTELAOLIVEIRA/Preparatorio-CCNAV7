@@ -177,14 +177,14 @@ const listaHtml = (itens) => "<ul>" + itens.map((x) => `<li>${x}</li>`).join("")
     cartao.innerHTML = `
       <h3>${curso}</h3>
       <span class="pct">${NOMES[curso]}</span>
-      <div class="barra"><i></i></div>
+      <div class="medidor"><i></i></div>
       <span class="pct" data-pct></span>
       <ol></ol>`;
 
     const atualizarBarra = () => {
       const total = modulos.length;
       const concluidos = modulos.filter((_, i) => feito[id(i)]).length;
-      cartao.querySelector(".barra i").style.width = (concluidos / total) * 100 + "%";
+      cartao.querySelector(".medidor i").style.width = (concluidos / total) * 100 + "%";
       cartao.querySelector("[data-pct]").textContent = `${concluidos} de ${total} módulos concluídos`;
     };
 

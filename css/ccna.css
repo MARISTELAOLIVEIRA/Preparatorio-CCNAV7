@@ -1,6 +1,8 @@
 /* ==============================================================
    Preparatório CCNA · Profa. Maristela
-   Estilo cyberpunk: noite roxa, neon e cores de curso como cabos de rede.
+   Componentes do preparatório. As cores, as fontes, a barra do topo e o fundo de placa vêm do
+   visual comum dos sites da Stela (assets/css/estilo.css e neon.css), carregado antes deste arquivo.
+   Cada curso tem a sua cor, como um cabo de rede: ITN ciano, SRWE amarelo e ENSA magenta.
 
    Índice
    1. Tokens (cores e medidas)
@@ -24,26 +26,27 @@
 /* 1. Tokens ---------------------------------------------------- */
 
 :root {
-  box-sizing: border-box;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  color-scheme: dark;
+  --noite: var(--fundo);
+  --painel: var(--superficie);
+  --painel2: var(--superficie-2);
+  --tinta: var(--texto);
+  --suave: var(--texto-2);
+  --linha: var(--borda-forte);
 
-  --noite: #0D0221;    /* fundo: noite roxa */
-  --painel: #190A3A;
-  --painel2: #241052;
-  --tinta: #EDE7FF;    /* texto */
-  --suave: #B3A6DA;    /* texto suave */
-  --linha: #3D2775;
+  --itn: #5fd0de;      /* ciano: ITN */
+  --srwe: var(--ouro-forte);   /* amarelo: SRWE */
+  --ensa: #ec7096;     /* magenta: ENSA */
+  --ok: var(--neon);
+  --erro: #ff5c7a;
 
-  --itn: #05D9E8;      /* ciano: ITN */
-  --srwe: #F9F002;     /* amarelo neon: SRWE */
-  --ensa: #FF2A6D;     /* magenta: ENSA */
-  --ok: #39FF9E;
-  --erro: #FF5C7A;
+  --memoji: 44px;      /* tamanho do memoji na abertura */
+}
 
-  --corte: 14px;       /* tamanho dos cantos cortados */
-  --memoji: 48px;      /* tamanho do memoji na barra do topo */
+/* tema claro: as cores dos cursos ficam mais fechadas, para manter o contraste */
+[data-tema="claro"] {
+  --itn: #0b7a88;
+  --ensa: #b4234a;
+  --erro: #c22450;
 }
 
 
@@ -55,35 +58,14 @@
   box-sizing: inherit;
 }
 
-html {
-  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 70px);
-  scroll-behavior: smooth;
-}
 
-body {
-  margin: 0;
-  background: var(--noite);
-  color: var(--tinta);
-  font: 400 1.05rem/1.6 "IBM Plex Sans", system-ui, sans-serif;
-  background-image:
-    radial-gradient(circle at 85% -10%, rgba(255, 42, 109, .22), transparent 45%),
-    radial-gradient(circle at -10% 30%, rgba(5, 217, 232, .14), transparent 40%);
-  background-attachment: fixed;
-}
 
-a {
-  color: var(--itn);
-}
 
-:focus-visible {
-  outline: 2px solid var(--srwe);
-  outline-offset: 3px;
-}
 
 h1,
 h2,
 h3 {
-  font-family: "Chakra Petch", system-ui, sans-serif;
+  font-family: var(--f-titulo);
   line-height: 1.1;
   margin: 0;
   font-weight: 700;
@@ -98,7 +80,9 @@ h2 {
 /* Títulos de seção começam com // */
 h2::before {
   content: "// ";
-  color: var(--ensa);
+  color: var(--ouro);
+  font-family: var(--f-mono);
+  font-weight: 400;
 }
 
 h3 {
@@ -111,16 +95,9 @@ h3 {
   padding: 0 1.25rem;
 }
 
-/* Cantos cortados (marca do visual) */
+/* Cartões com cantos arredondados (antes eram cortados) */
 .corte {
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--corte)) 0,
-    100% var(--corte),
-    100% 100%,
-    var(--corte) 100%,
-    0 calc(100% - var(--corte))
-  );
+  border-radius: var(--raio-p);
 }
 
 [hidden] {
@@ -130,59 +107,14 @@ h3 {
 
 /* 3. Topo fixo ------------------------------------------------- */
 
-nav.topo {
-  position: sticky;
-  top: env(safe-area-inset-top, 0px);
-  z-index: 10;
-  background: rgba(13, 2, 33, .88);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--linha);
-}
-
-nav.topo .wrap {
-  display: flex;
-  align-items: center;
-  gap: 1.1rem;
-  min-height: 58px;
-  overflow-x: auto;
-}
-
-nav.topo b {
-  font-family: "Chakra Petch";
-  white-space: nowrap;
-  color: var(--srwe);
-}
-
-nav.topo a {
-  color: var(--tinta);
-  text-decoration: none;
-  white-space: nowrap;
-  font-size: .95rem;
-  padding: .3rem .1rem;
-  border-bottom: 2px solid transparent;
-  font-family: "Chakra Petch";
-}
-
-nav.topo a:hover {
-  border-color: var(--ensa);
-  color: var(--ensa);
-}
-
-/* Memoji da professora, na ponta direita da barra.
+/* Memoji da professora, ao lado do nome na abertura.
    Camadas: .memoji (posição e degradê) > .memoji-brilho (neon)
    > .memoji-hex (moldura ciano) > .memoji-rosto (recorte) > img. */
 
-/* No celular o menu rola para os lados: o sticky prende o memoji na borda
-   direita (o -1.25rem compensa o padding do .wrap), e o degradê esconde
-   os links que passam por baixo dele. */
 .memoji {
-  position: sticky;
-  right: -1.25rem;
-  margin-left: auto;
-  flex-shrink: 0;
-  display: flex;
-  padding: 0 .6rem 0 1rem;
-  background: linear-gradient(to right, transparent, rgba(13, 2, 33, .96) 1rem);
+  display: inline-flex;
+  vertical-align: middle;
+  margin-right: .5rem;
 }
 
 /* O brilho fica numa camada própria, porque o clip-path da moldura
@@ -191,7 +123,7 @@ nav.topo a:hover {
   display: block;
   width: var(--memoji);
   height: var(--memoji);
-  filter: drop-shadow(0 0 6px rgba(5, 217, 232, .7));
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--itn) 60%, transparent));
   transition: transform .2s;
 }
 
@@ -232,36 +164,9 @@ nav.topo a:hover {
 
 header.hero {
   position: relative;
+  isolation: isolate;   /* a chuva de 0 e 1 (neon.css) fica atrás do conteúdo */
   padding: 3.5rem 0 3rem;
   overflow: hidden;
-}
-
-/* Grade synthwave em perspectiva */
-header.hero::before {
-  content: "";
-  position: absolute;
-  left: -20%;
-  right: -20%;
-  bottom: -40%;
-  height: 70%;
-  background-image:
-    linear-gradient(rgba(255, 42, 109, .45) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 42, 109, .45) 1px, transparent 1px);
-  background-size: 48px 48px;
-  transform: perspective(420px) rotateX(62deg);
-  transform-origin: center top;
-  opacity: .45;
-  pointer-events: none;
-  mask-image: linear-gradient(transparent, #000 60%);
-}
-
-/* Scanlines */
-header.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(transparent 0 3px, rgba(0, 0, 0, .18) 3px 4px);
 }
 
 .hero .grade {
@@ -276,29 +181,14 @@ header.hero::after {
 .hero h1 {
   font-size: clamp(2.6rem, 6.4vw, 4.8rem);
   line-height: .95;
-  letter-spacing: .01em;
-  color: #fff;
-  text-shadow:
-    0 0 6px rgba(5, 217, 232, .9),
-    0 0 22px rgba(5, 217, 232, .55),
-    3px 0 0 rgba(255, 42, 109, .85);
-}
-
-/* Glitch: roda uma única vez ao carregar */
-.glitch {
-  animation: glitch 1.1s steps(2) 1 .3s;
-}
-
-@keyframes glitch {
-  0%   { transform: translate(0); }
-  20%  { transform: translate(-3px, 1px); text-shadow: -4px 0 var(--ensa), 4px 0 var(--itn); }
-  40%  { transform: translate(3px, -1px); }
-  60%  { transform: translate(-2px, 0); text-shadow: 4px 0 var(--ensa), -4px 0 var(--itn); }
-  100% { transform: translate(0); }
+  font-weight: 800;
+  font-stretch: 110%;
+  letter-spacing: -.035em;
+  color: var(--texto);
 }
 
 .hero .quem {
-  font-family: "Share Tech Mono", monospace;
+  font-family: var(--f-mono);
   color: var(--srwe);
   margin: .9rem 0 0;
   font-size: 1rem;
@@ -331,15 +221,14 @@ header.hero::after {
 
 /* Terminal com o traceroute */
 .terminal {
-  background: rgba(9, 2, 24, .92);
-  color: var(--tinta);
-  border: 1px solid var(--itn);
+  background: var(--chip);
+  color: #e8efe9;
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio-p);
   padding: 1.1rem 1.2rem 1.3rem;
-  font: 400 .95rem/1.7 "Share Tech Mono", monospace;
+  font: 400 .95rem/1.7 var(--f-mono);
   min-height: 290px;
-  box-shadow:
-    0 0 0 1px rgba(5, 217, 232, .2),
-    0 0 38px -8px rgba(5, 217, 232, .55);
+  box-shadow: var(--sombra);
   overflow-x: auto;
 }
 
@@ -349,14 +238,20 @@ header.hero::after {
   margin-bottom: .8rem;
 }
 
+/* as três bolinhas da janela do macOS */
 .terminal .bar i {
   width: 11px;
   height: 11px;
-  background: var(--linha);
+  border-radius: 50%;
+  background: #febc2e;
 }
 
 .terminal .bar i:first-child {
-  background: var(--ensa);
+  background: #ff5f57;
+}
+
+.terminal .bar i:last-child {
+  background: #28c840;
 }
 
 .terminal .p {
@@ -364,7 +259,7 @@ header.hero::after {
 }
 
 .terminal .aviso {
-  color: #9FB3C8;
+  color: #9aa79f;
 }
 
 /* Cada salto do traceroute aparece aos poucos */
@@ -386,7 +281,7 @@ header.hero::after {
 
 .hop.fim {
   color: var(--ok);
-  text-shadow: 0 0 10px rgba(57, 255, 158, .6);
+  text-shadow: 0 0 10px var(--neon-brilho);
 }
 
 .hop.prompt {
@@ -406,6 +301,11 @@ header.hero::after {
   50% { opacity: 0; }
 }
 
+/* o botão "Pausar animações" (placa.js) também para o cursor */
+.pausado .cursor {
+  animation: none;
+}
+
 /* Botões do hero */
 .botoes {
   display: flex;
@@ -416,15 +316,18 @@ header.hero::after {
 .btn {
   display: inline-block;
   text-decoration: none;
-  font: 700 1rem "Chakra Petch";
+  font: 700 1rem var(--f-titulo);
   padding: .75rem 1.2rem;
-  color: var(--noite);
-  background: var(--srwe);
-  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  color: var(--fundo);
+  background: var(--ouro-forte);
+  border: 1px solid var(--ouro-forte);
+  border-radius: 999px;
 }
 
 .btn.sec {
-  background: var(--itn);
+  color: var(--texto);
+  background: transparent;
+  border-color: var(--borda-forte);
 }
 
 .btn:hover {
@@ -460,14 +363,14 @@ section {
 }
 
 .proximo .data {
-  font: 700 3.2rem/1 "Chakra Petch";
+  font: 700 3.2rem/1 var(--f-titulo);
   color: var(--srwe);
-  text-shadow: 0 0 16px rgba(249, 240, 2, .45);
+  text-shadow: none;
 }
 
 .proximo .data small {
   display: block;
-  font: 400 .95rem "Share Tech Mono";
+  font: 400 .95rem var(--f-mono);
   color: var(--suave);
   margin-top: .4rem;
   text-shadow: none;
@@ -506,8 +409,8 @@ section {
   top: 8px;
   bottom: 8px;
   width: 3px;
-  background: linear-gradient(var(--itn) 0 58%, var(--srwe) 58% 79%, var(--ensa) 79% 90%, #fff 90%);
-  box-shadow: 0 0 10px rgba(5, 217, 232, .5);
+  background: linear-gradient(var(--itn) 0 58%, var(--srwe) 58% 79%, var(--ensa) 79% 90%, var(--neon) 90%);
+  box-shadow: none;
 }
 
 .trilha > li {
@@ -525,7 +428,7 @@ section {
   height: 36px;
   display: grid;
   place-items: center;
-  font: 400 .9rem "Share Tech Mono";
+  font: 400 .9rem var(--f-mono);
   color: var(--noite);
   background: var(--c);
   clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
@@ -563,7 +466,7 @@ section {
 }
 
 .trilha summary .d {
-  font: 400 .95rem "Share Tech Mono";
+  font: 400 .95rem var(--f-mono);
   color: var(--suave);
   min-width: 5.5ch;
 }
@@ -574,7 +477,7 @@ section {
 }
 
 .tag {
-  font: 700 .78rem "Chakra Petch";
+  font: 700 .78rem var(--f-titulo);
   padding: .1rem .55rem;
   color: var(--c);
   border: 1px solid var(--c);
@@ -589,7 +492,7 @@ section {
 
 .trilha .corpo h4 {
   margin: .2rem 0;
-  font: 600 .88rem "Chakra Petch";
+  font: 600 .88rem var(--f-titulo);
   color: var(--c);
 }
 
@@ -619,14 +522,14 @@ section {
   color: var(--c);
 }
 
-.curso .barra {
+.curso .medidor {
   height: 8px;
   background: var(--noite);
   margin: .6rem 0 .3rem;
   overflow: hidden;
 }
 
-.curso .barra i {
+.curso .medidor i {
   display: block;
   height: 100%;
   width: 0;
@@ -679,7 +582,7 @@ section {
 }
 
 .filtros button {
-  font: 600 .92rem "Chakra Petch";
+  font: 600 .92rem var(--f-titulo);
   border: 1px solid var(--linha);
   background: var(--painel);
   color: var(--tinta);
@@ -713,7 +616,7 @@ section {
 }
 
 .videos .n {
-  font: 400 .85rem "Share Tech Mono";
+  font: 400 .85rem var(--f-mono);
   color: var(--c);
 }
 
@@ -731,7 +634,7 @@ section {
   gap: 1.2rem;
 }
 
-.cartao {
+.painel {
   background: var(--painel);
   padding: 1.4rem;
   box-shadow: inset 0 0 0 1px var(--linha);
@@ -744,10 +647,10 @@ section {
 
 /* Sub-redes */
 .desafio-ip {
-  font: 400 1.5rem "Share Tech Mono";
+  font: 400 1.5rem var(--f-mono);
   margin: .6rem 0 1rem;
   color: var(--itn);
-  text-shadow: 0 0 10px rgba(5, 217, 232, .5);
+  text-shadow: none;
   overflow-wrap: anywhere;
 }
 
@@ -766,7 +669,7 @@ section {
 }
 
 .campos input {
-  font: 400 1.02rem "Share Tech Mono";
+  font: 400 1.02rem var(--f-mono);
   padding: .45rem .55rem;
   border: 1px solid var(--linha);
   background: var(--noite);
@@ -796,7 +699,7 @@ section {
 }
 
 .acoes button {
-  font: 700 .95rem "Chakra Petch";
+  font: 700 .95rem var(--f-titulo);
   padding: .55rem 1rem;
   cursor: pointer;
   border: 0;
@@ -857,7 +760,7 @@ section {
   color: #fff;
   display: grid;
   place-items: center;
-  font: 700 1rem "Chakra Petch";
+  font: 700 1rem var(--f-titulo);
   clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
 }
 
@@ -881,7 +784,7 @@ section {
 
 .links a strong {
   display: block;
-  font-family: "Chakra Petch";
+  font-family: var(--f-titulo);
   color: var(--itn);
 }
 
@@ -899,7 +802,7 @@ section {
 }
 
 .cofre label {
-  font: 600 .95rem "Chakra Petch";
+  font: 600 .95rem var(--f-titulo);
   color: var(--suave);
 }
 
@@ -911,7 +814,7 @@ section {
 
 .linha-senha input {
   flex: 1;
-  font: 400 1.05rem "Share Tech Mono";
+  font: 400 1.05rem var(--f-mono);
   padding: .55rem .7rem;
   border: 1px solid var(--linha);
   background: var(--noite);
@@ -924,7 +827,7 @@ section {
 }
 
 .linha-senha button {
-  font: 700 .95rem "Chakra Petch";
+  font: 700 .95rem var(--f-titulo);
   border: 0;
   background: var(--ensa);
   color: #fff;
@@ -934,13 +837,13 @@ section {
 
 .aberto {
   color: var(--ok);
-  font-family: "Share Tech Mono";
+  font-family: var(--f-mono);
 }
 
 
 /* 13. Página de treinos (simulado) ----------------------------- */
 
-nav.topo .marca {
+.marca-antiga {
   color: var(--srwe);
   font-weight: 700;
 }
@@ -983,14 +886,14 @@ nav.topo .marca {
   display: flex;
   flex-direction: column;
   gap: .3rem;
-  font: 600 .95rem "Chakra Petch";
+  font: 600 .95rem var(--f-titulo);
   color: var(--suave);
 }
 
 .sim-campo input,
 .sim-campo select,
 .sim-par select {
-  font: 400 1rem "IBM Plex Sans";
+  font: 400 1rem var(--f-texto);
   padding: .5rem .6rem;
   border: 1px solid var(--linha);
   background: var(--noite);
@@ -1007,7 +910,7 @@ nav.topo .marca {
 }
 
 .sim-modos legend {
-  font: 600 .95rem "Chakra Petch";
+  font: 600 .95rem var(--f-titulo);
   color: var(--suave);
   margin-bottom: .3rem;
 }
@@ -1026,7 +929,7 @@ nav.topo .marca {
 
 .sim-modo strong {
   display: block;
-  font-family: "Chakra Petch";
+  font-family: var(--f-titulo);
   color: var(--tinta);
 }
 
@@ -1050,7 +953,7 @@ nav.topo .marca {
   flex-wrap: wrap;
   align-items: center;
   gap: .4rem 1rem;
-  font: 400 .95rem "Share Tech Mono";
+  font: 400 .95rem var(--f-mono);
   color: var(--suave);
 }
 
@@ -1095,7 +998,7 @@ nav.topo .marca {
 
 /* Saída de comando */
 .sim-exibicao {
-  font: 400 .88rem/1.5 "Share Tech Mono", monospace;
+  font: 400 .88rem/1.5 var(--f-mono);
   background: var(--noite);
   color: var(--tinta);
   border-left: 3px solid var(--itn);
@@ -1210,7 +1113,7 @@ nav.topo .marca {
 }
 
 .sim-resultado h4 {
-  font: 600 1rem "Chakra Petch";
+  font: 600 1rem var(--f-titulo);
   color: var(--itn);
   margin: 1.5rem 0 .6rem;
 }
@@ -1223,17 +1126,17 @@ nav.topo .marca {
 }
 
 .sim-topico .pct {
-  font: 400 .9rem "Share Tech Mono";
+  font: 400 .9rem var(--f-mono);
   color: var(--suave);
 }
 
-.sim-topico .barra {
+.sim-topico .medidor {
   grid-column: 1 / -1;
   height: 8px;
   background: var(--noite);
 }
 
-.sim-topico .barra i {
+.sim-topico .medidor i {
   display: block;
   height: 100%;
   background: var(--itn);
@@ -1261,7 +1164,7 @@ nav.topo .marca {
 }
 
 .sim-status {
-  font: 700 .85rem "Chakra Petch";
+  font: 700 .85rem var(--f-titulo);
   color: var(--suave);
 }
 
@@ -1288,7 +1191,7 @@ footer {
   padding: 2.5rem 0 3rem;
   border-top: 1px solid var(--linha);
   color: var(--suave);
-  font: 400 .95rem "Share Tech Mono";
+  font: 400 .95rem var(--f-mono);
 }
 
 

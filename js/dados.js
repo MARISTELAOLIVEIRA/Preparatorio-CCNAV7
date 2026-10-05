@@ -13,7 +13,7 @@ const LINKS_TURMA = [
 ];
 
 
-/* Cor de cada curso (as variáveis estão em css/estilo.css) */
+/* Cor de cada curso (as variáveis estão em css/ccna.css) */
 const CORES = {
   ITN: "var(--itn)",
   SRWE: "var(--srwe)",
