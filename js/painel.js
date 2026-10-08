@@ -93,7 +93,7 @@
     const csv = [cab, ...corpo].map((linha) => linha.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(";")).join("\n");
     const link = document.createElement("a");
     link.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" }));
-    link.download = "turma-ccna.csv";
+    link.download = "turma-" + PREPARATORIO + ".csv";
     link.click();
   });
 
