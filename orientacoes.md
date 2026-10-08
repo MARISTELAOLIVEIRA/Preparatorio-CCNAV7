@@ -73,3 +73,14 @@ Este repositório contém o site do preparatório CCNA da Profa. Maristela Olive
 - Usa NetAcad, Packet Tracer, Microsoft Teams, Loop, Whiteboard, Moodle, GitHub e IA com uso consciente (GitHub Copilot e Copilot do Microsoft 365).
 - Não usa slides: os sites substituem as apresentações.
 - Os vídeos ficam no Teams/Stream (acesso só da turma); o site guarda apenas os links, na área protegida.
+
+## Login opcional e progresso no Supabase (piloto desde 08/10/2026)
+
+- O site continua aberto para todos. O botão **Entrar** (barra) é opcional: com login (e-mail e senha), o
+  "Meu progresso" e as notas dos treinos também vão para o Supabase. Sem login, tudo fica só no navegador.
+- Banco: o mesmo projeto do StelaCore, mas em tabelas próprias (`prep_alunos`, `prep_acessos`, `prep_progresso`,
+  `prep_treinos`, `prep_professoras`). O SQL está em `supabase/tabelas-preparatorios.sql` (com as regras RLS).
+  Não mexer nas tabelas do StelaCore (`players`, `scores`).
+- `js/conta.js`: cliente do Supabase, botão Entrar, janela de login e as funções `CONTA.salvarProgresso`,
+  `CONTA.carregarProgresso` e `CONTA.salvarTreino`. A chave é a pública (`sb_publishable`); a secreta nunca vai no site.
+- `painel.html` + `js/painel.js`: painel da professora (quem está em `prep_professoras`), com tabela e CSV.

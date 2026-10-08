@@ -1216,3 +1216,169 @@ footer {
     opacity: 1;
   }
 }
+
+
+/* 14. Conta (login opcional, conta.js) -------------------------- */
+
+/* o botão "Entrar" da barra usa o mesmo estilo dos outros botões dela (estilo.css) */
+#btn-conta {
+  max-width: 11rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conta-janela {
+  width: min(92vw, 440px);
+  padding: 1.4rem;
+  color: var(--tinta);
+  background: var(--painel);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-p);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .8);
+}
+
+.conta-janela::backdrop {
+  background: rgba(3, 6, 12, .7);
+}
+
+.conta-janela h2 {
+  margin: 0 0 .6rem;
+  font-size: 1.3rem;
+}
+
+.conta-janela p {
+  margin: 0 0 .8rem;
+  color: var(--suave);
+  font-size: .95rem;
+}
+
+.conta-abas {
+  display: flex;
+  gap: .4rem;
+  margin: .4rem 0 1rem;
+}
+
+.conta-abas button {
+  flex: 1;
+  padding: .5rem;
+  font: 600 .9rem var(--f-titulo);
+  color: var(--suave);
+  background: transparent;
+  border: 1px solid var(--linha);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.conta-abas button[aria-selected="true"] {
+  color: var(--tinta);
+  border-color: var(--itn);
+}
+
+.conta-form {
+  display: grid;
+  gap: .7rem;
+}
+
+.conta-form label {
+  display: grid;
+  gap: .3rem;
+  font: 600 .9rem var(--f-titulo);
+}
+
+.conta-form input {
+  font: 400 1rem var(--f-texto);
+  padding: .55rem .7rem;
+  color: var(--tinta);
+  background: var(--noite);
+  border: 1px solid var(--linha);
+  border-radius: 6px;
+}
+
+.conta-form input:focus {
+  border-color: var(--itn);
+  outline: none;
+}
+
+.conta-msg {
+  min-height: 1.2em;
+  color: var(--itn) !important;
+}
+
+.conta-botoes {
+  display: flex;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+
+.conta-botoes button {
+  padding: .55rem 1.1rem;
+  font: 700 .95rem var(--f-titulo);
+  color: #04121a;
+  background: var(--itn);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.conta-botoes button.sec {
+  color: var(--tinta);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--linha);
+}
+
+.conta-lgpd {
+  font-size: .8rem !important;
+}
+
+
+/* 15. Painel da professora (painel.html) ------------------------- */
+
+.painel-acoes {
+  display: flex;
+  gap: .6rem;
+  margin: 0 0 1rem;
+}
+
+.painel-acoes button {
+  padding: .5rem 1rem;
+  font: 700 .9rem var(--f-titulo);
+  color: var(--tinta);
+  background: transparent;
+  border: 1px solid var(--linha);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.painel-acoes button:hover {
+  border-color: var(--itn);
+}
+
+.painel-tabela {
+  overflow-x: auto;
+}
+
+.painel-tabela table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .92rem;
+}
+
+.painel-tabela th,
+.painel-tabela td {
+  padding: .6rem .7rem;
+  text-align: left;
+  border-bottom: 1px solid var(--linha);
+  white-space: nowrap;
+}
+
+.painel-tabela thead th {
+  font: 600 .78rem var(--f-mono);
+  color: var(--itn);
+}
+
+.painel-tabela tbody th small {
+  display: block;
+  font: 400 .78rem var(--f-mono);
+  color: var(--suave);
+}
