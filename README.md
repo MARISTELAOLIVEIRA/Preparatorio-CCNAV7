@@ -196,9 +196,9 @@ Dica de quem ensina JavaScript: abra o DevTools (`F12`), vá na aba **Sources** 
 
 - **Datas, encontros, módulos e vídeos:** edite o `js/dados.js`.
 - **Questões do simulado:** edite o `js/questoes.js`. Os campos estão explicados no topo do arquivo.
-- **Links da turma e dos vídeos (área protegida):** abra o `gerador-area-turma.html` no seu computador, preencha, clique em Gerar e cole o resultado na linha `const AREA_TURMA = "…";` do `js/dados.js`.
-- **Novo semestre:** atualize as datas em `ENCONTROS` e gere a área da turma com uma senha nova.
-- **Publicação:** GitHub Pages, branch `main`, pasta raiz. O `gerador-area-turma.html` é só para uso local e não vai para o repositório (está no `.gitignore`).
+- **Links da área da turma e dos vídeos:** edite `AREA_TURMA` e `VIDEOS_LINKS` no `js/dados.js`. Não há senha: os links (Teams, gravações) só abrem com a conta institucional.
+- **Novo semestre:** atualize as datas em `ENCONTROS` e os links da área da turma.
+- **Publicação:** GitHub Pages, branch `main`, pasta raiz.
 
 </details>
 

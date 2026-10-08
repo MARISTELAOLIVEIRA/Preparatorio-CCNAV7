@@ -251,94 +251,30 @@ mostrarVideos("todos");
 
 
 /* 6. Área da turma --------------------------------------------- */
-/* AREA_TURMA = base64 de salt (16 bytes) + iv (12 bytes) + texto cifrado.
-   Chave: PBKDF2-SHA-256, 250.000 iterações. Cifra: AES-GCM 256.
-   Tudo acontece no navegador, com a Web Crypto API. */
+/* Os links abrem só com a conta institucional, por isso não há senha aqui. */
 
-async function abrirCofre(senha) {
-  const bytes = Uint8Array.from(atob(AREA_TURMA), (c) => c.charCodeAt(0));
-  const salt = bytes.slice(0, 16);
-  const iv = bytes.slice(16, 28);
-  const cifrado = bytes.slice(28);
+(function areaDaTurma() {
+  const caixa = $("#areaLinks");
 
-  const base = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(senha),
-    "PBKDF2",
-    false,
-    ["deriveKey"]
-  );
-
-  const chave = await crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt, iterations: 250000, hash: "SHA-256" },
-    base,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["decrypt"]
-  );
-
-  // Com a senha errada, o AES-GCM falha aqui e lança um erro
-  const texto = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, chave, cifrado);
-  return JSON.parse(new TextDecoder().decode(texto));
-}
-
-// Mostra os links protegidos e coloca as URLs nos vídeos
-function mostrarCofre(conteudo) {
-  const caixa = $("#cofreLinks");
-  caixa.innerHTML = "";
-
-  (conteudo.links || []).forEach((link) => {
+  AREA_TURMA.forEach((link) => {
     const a = document.createElement("a");
     a.href = link.u;
     a.target = "_blank";
     a.rel = "noopener";
     a.innerHTML = `<strong>${link.t}</strong><span>${link.d || ""}</span>`;
+    // com ícone (ex.: o do Teams), ele fica à esquerda do texto
+    if (link.i) {
+      a.classList.add("com-icone");
+      a.insertAdjacentHTML("afterbegin", `<img src="${link.i}" alt="" width="40" height="40">`);
+    }
     caixa.appendChild(a);
   });
 
-  caixa.hidden = false;
-  $("#cofreForm").hidden = true;
-
-  const urls = conteudo.videos || {};
+  // coloca os links das gravações nos vídeos e desenha a lista de novo
   VIDEOS.forEach((v) => {
-    if (urls[v.n]) v.u = urls[v.n];
+    if (VIDEOS_LINKS[v.n]) v.u = VIDEOS_LINKS[v.n];
   });
   mostrarVideos(filtroAtual());
-}
-
-(function areaDaTurma() {
-  const CHAVE = "ccna-turma";
-  const form = $("#cofreForm");
-  const msg = $("#cofreMsg");
-
-  // silencioso: não mostra erro (usado ao reabrir a página com a senha da sessão)
-  const tentar = async (senha, silencioso) => {
-    try {
-      const conteudo = await abrirCofre(senha);
-      try {
-        sessionStorage.setItem(CHAVE, senha);
-      } catch (erro) {}
-      mostrarCofre(conteudo);
-    } catch (erro) {
-      if (!silencioso) {
-        msg.textContent = "Senha incorreta. Confira a senha informada no primeiro encontro.";
-        msg.className = "retorno no";
-      }
-    }
-  };
-
-  form.addEventListener("submit", (ev) => {
-    ev.preventDefault();
-    msg.textContent = "Verificando…";
-    msg.className = "retorno";
-    tentar($("#cofreSenha").value, false);
-  });
-
-  let salva = null;
-  try {
-    salva = sessionStorage.getItem(CHAVE);
-  } catch (erro) {}
-  if (salva) tentar(salva, true);
 })();
 
 

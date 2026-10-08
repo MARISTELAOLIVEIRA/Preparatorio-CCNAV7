@@ -196,6 +196,15 @@ const VIDEOS = [
 ].map(([curso, titulo], i) => ({ n: i + 1, c: curso, t: titulo, u: "" }));
 
 
-/* Área da turma: conteúdo criptografado.
-   Gere com o gerador-area-turma.html e cole o resultado aqui. */
-const AREA_TURMA = "wla3EoZ5vTtSKnS0IS4g+yxJcMQNQ2ZK+i7zcl4BTppUY9h+SdPCcj407VVOgv4JTllhfhbpgj65hWI0x+WqXGeZYniv3HezKOARNHjTRr1sEcKve83k07dAh+eD8edYIXbs315JMNnRi8olZ0l3cM0p7jgjv9KyNchRCvmXy6JG7isDVlkxQnqbbbuEWhro1oyCX0iEYABrL1yuUGjQ8qWtNWDW12HEVy9/xmNokhMY/U2Vxmqf9rilBsmNrBDP5AR7xu4EYLTDF6IWuAJ9447Pc7rwwnmo8TMBrnjey5UIwI5VmscbxvS265QpcPPm2B6WtXNFZS47/w==";
+/* Área da turma: links que só abrem com a conta institucional (Teams, Moodle...).
+   Não precisa de senha: quem não é da turma não consegue entrar nesses links.
+   t: título  d: descrição curta  u: link  i: ícone (opcional) */
+const AREA_TURMA = [
+  { t: "Equipe do Teams", d: "Gravações, avisos e conversas da turma", i: "assets/img/tec/teams.svg", u: "https://teams.cloud.microsoft/l/team/19%3ALHnbRpKjPrG5ZuJ3ypdNAd09-t3xqCgX2fHS495nf101%40thread.tacv2/conversations?groupId=f4c8d5a8-d654-4898-9b8d-b77161eda181&tenantId=85cccaae-eea0-478c-8062-60536e374ef5" },
+  { t: "Sala de aula", d: "Entre aqui na hora do encontro ao vivo, no Teams", i: "assets/img/tec/teams.svg", u: "https://teams.microsoft.com/meet/252667035137317?p=kirwBxrS38FD2wHBSp" },
+];
+
+/* Links das gravações: número do vídeo → link. Vídeo sem link aparece como "Em breve".
+   Exemplo: 1: "https://...", */
+const VIDEOS_LINKS = {
+};

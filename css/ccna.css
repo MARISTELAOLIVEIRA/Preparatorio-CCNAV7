@@ -793,46 +793,22 @@ section {
   color: var(--suave);
 }
 
+/* cartão com ícone (ex.: Teams): ícone à esquerda, título e descrição à direita */
+.links a.com-icone {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: .8rem;
+  align-items: center;
+}
+
+.links a.com-icone img {
+  grid-row: span 2;
+  width: 2.6rem;
+  height: 2.6rem;
+}
+
 .links a:hover {
   box-shadow: inset 0 0 0 1px var(--itn), 0 0 18px -6px var(--itn);
-}
-
-.cofre {
-  max-width: 520px;
-}
-
-.cofre label {
-  font: 600 .95rem var(--f-titulo);
-  color: var(--suave);
-}
-
-.linha-senha {
-  display: flex;
-  gap: .6rem;
-  margin-top: .4rem;
-}
-
-.linha-senha input {
-  flex: 1;
-  font: 400 1.05rem var(--f-mono);
-  padding: .55rem .7rem;
-  border: 1px solid var(--linha);
-  background: var(--noite);
-  color: var(--tinta);
-  min-width: 0;
-}
-
-.linha-senha input:focus {
-  border-color: var(--itn);
-}
-
-.linha-senha button {
-  font: 700 .95rem var(--f-titulo);
-  border: 0;
-  background: var(--ensa);
-  color: #fff;
-  padding: .55rem 1.1rem;
-  cursor: pointer;
 }
 
 .aberto {
