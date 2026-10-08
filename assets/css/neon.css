@@ -1,18 +1,26 @@
 /*
-  neon.css: o toque hacker do site de Python (chuva de 0 e 1 e brilho verde neon, como no PyQuiz).
-  versão 1 · 2026-10-05
+  neon.css: o toque hacker do site de Python (chuva de 0 e 1 e brilho neon, como no PyQuiz).
+  versão 2 · 2026-10-07 · NESTE SITE (Preparatório CCNA) o neon é o azul da Cisco, com toques de verde-terminal
+  (a chuva alterna as duas). O link do preparatório na barra é o logo da Cisco, num quadradinho branco.
+  Também traz a assinatura da Faculdade (este site não usa o disciplina.css novo).
+  Não copie esta versão para os outros sites. Não copie esta versão para os outros sites.
 
   Carregue depois do estilo.css e do disciplina.css.
 */
 
 :root {
-  --neon: #39ff14;
-  --neon-brilho: rgba(57, 255, 20, .45);
+  --neon: #1bb8f0;
+  --neon-brilho: rgba(27, 184, 240, .45);
+  --neon-2: #39ff14;
+  --neon-2-brilho: rgba(57, 255, 20, .4);
 }
 
+/* no claro, as duas cores mais fechadas, para dar leitura no fundo branco */
 [data-tema="claro"] {
-  --neon: #0a8f4d;
-  --neon-brilho: rgba(10, 143, 77, .2);
+  --neon: #00709c;
+  --neon-brilho: rgba(0, 112, 156, .2);
+  --neon-2: #0a8f4d;
+  --neon-2-brilho: rgba(10, 143, 77, .2);
 }
 
 
@@ -55,8 +63,93 @@
     0 0 40px -4px var(--neon-brilho);
 }
 
-/* o prompt e as etiquetas verdes da página também brilham de leve */
+/* o prompt e as etiquetas verdes da página também brilham de leve, na segunda cor */
 .prompt b,
 .etiqueta.verde {
-  text-shadow: 0 0 10px var(--neon-brilho);
+  text-shadow: 0 0 10px var(--neon-2-brilho);
+}
+
+
+/* letra grossa e fechada, como a do logo do JS, nas palavras em neon e no link da barra */
+.neon,
+.marcas .marca-disc {
+  font-family: var(--f-titulo);
+  font-weight: 900;
+  font-stretch: 100%;
+  letter-spacing: -.01em;
+}
+
+/* o logo do JS como botão da página inicial, na barra do topo */
+.marcas .marca-disc.marca-logo {
+  display: inline-flex;
+  padding: 0;
+  text-shadow: none;
+}
+
+.marca-logo img {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  padding: 3px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 0 10px var(--neon-brilho);
+  transition: box-shadow .2s, transform .2s;
+}
+
+.marca-logo:hover img,
+.marca-logo:focus-visible img {
+  box-shadow: 0 0 18px var(--neon-2-brilho), 0 0 4px var(--neon-2);
+  transform: scale(1.06);
+}
+
+.pausado .marca-logo img {
+  transition: none;
+}
+
+/* ---------- assinatura da Faculdade (Fac Senac DF; cópia do disciplina.css v4): azul-marinho e laranja do logo ---------- */
+:root {
+  --senac-azul: #3b6fd4;   /* no escuro, um azul mais aberto para aparecer */
+  --senac-laranja: #f39a1e;
+}
+
+[data-tema="claro"] {
+  --senac-azul: #082c75;
+}
+
+/* linha fina laranja e azul embaixo da barra do topo */
+.barra::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--senac-laranja), var(--senac-azul));
+  pointer-events: none;
+}
+
+/* o logo da Faculdade num cartão branco, como no portal */
+.logo-faculdade {
+  display: block;
+  justify-self: center;
+  width: fit-content;
+  margin: 1.4rem auto 0;
+  padding: .55rem .9rem;
+  border-radius: var(--raio-p);
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .07), 0 18px 40px -20px rgba(0, 0, 0, .6);
+  transition: transform .2s;
+}
+
+.logo-faculdade:hover {
+  transform: translateY(-2px);
+}
+
+.pausado .logo-faculdade {
+  transition: none;
+}
+
+.logo-faculdade img {
+  display: block;
+  width: clamp(11rem, 26vw, 15rem);
+  height: auto;
 }
