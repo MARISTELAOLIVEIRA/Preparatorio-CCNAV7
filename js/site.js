@@ -147,7 +147,8 @@ const listaHtml = (itens) => "<ul>" + itens.map((x) => `<li>${x}</li>`).join("")
 
 
 /* 4. Progresso nos cursos -------------------------------------- */
-/* Salvo só neste navegador, no localStorage, como { "ITN-1": true, ... } */
+/* Salvo neste navegador, no localStorage, como { "ITN-1": true, ... }.
+   Com login (conta.js), também vai para a nuvem e volta em qualquer computador. */
 
 (function progresso() {
   const CHAVE = "ccna-progresso";
@@ -167,6 +168,9 @@ const listaHtml = (itens) => "<ul>" + itens.map((x) => `<li>${x}</li>`).join("")
 
   const caixa = $("#cursos-lista");
 
+  // desenha os três cursos com o que está marcado em "feito"
+  const desenhar = () => {
+  caixa.innerHTML = "";
   Object.keys(MODULOS).forEach((curso) => {
     const modulos = MODULOS[curso];
     const id = (i) => curso + "-" + (i + 1);
@@ -200,6 +204,8 @@ const listaHtml = (itens) => "<ul>" + itens.map((x) => `<li>${x}</li>`).join("")
         li.classList.toggle("ck", ev.target.checked);
         salvar();
         atualizarBarra();
+        // logado? guarda também na nuvem
+        if (window.CONTA) CONTA.salvarProgresso({ [id(i)]: ev.target.checked });
       });
 
       ol.appendChild(li);
@@ -208,6 +214,26 @@ const listaHtml = (itens) => "<ul>" + itens.map((x) => `<li>${x}</li>`).join("")
     atualizarBarra();
     caixa.appendChild(cartao);
   });
+  };
+
+  desenhar();
+
+  // ao entrar: junta o que está no navegador com o que está na nuvem (o que foi marcado em qualquer um vale)
+  if (window.CONTA) {
+    CONTA.aoMudar(async (usuario) => {
+      if (!usuario) return;
+      const daNuvem = await CONTA.carregarProgresso();
+      if (!daNuvem) return;
+      const soAqui = {};
+      Object.keys(feito).forEach((item) => {
+        if (feito[item] && !(item in daNuvem)) soAqui[item] = true;
+      });
+      Object.assign(feito, daNuvem, soAqui);
+      salvar();
+      desenhar();
+      CONTA.salvarProgresso(soAqui);
+    });
+  }
 })();
 
 

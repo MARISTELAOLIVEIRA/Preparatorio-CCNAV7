@@ -75,6 +75,14 @@ const CHAVE_NOME = "ccna-nome";
 // Preenche o nome usado da última vez (fica salvo só neste navegador)
 try {
   campoNome.value = localStorage.getItem(CHAVE_NOME) || "";
+  // logado e sem nome salvo? usa o nome da conta
+  if (window.CONTA) {
+    CONTA.aoMudar((usuario) => {
+      if (usuario && !campoNome.value && usuario.user_metadata && usuario.user_metadata.nome) {
+        campoNome.value = usuario.user_metadata.nome;
+      }
+    });
+  }
 } catch (erro) {}
 
 // "  maria   da silva " -> "maria da silva"
@@ -476,6 +484,13 @@ function finalizar(motivo) {
 
   // Guarda o resultado para gerar a imagem (seção 7)
   sim.resultado = { curso, modo, data, acertos, total, pct, mensagem, tempo, desempenho };
+
+  // Logado (conta.js)? A nota também vai para a nuvem, para a professora acompanhar
+  if (window.CONTA && CONTA.usuario()) {
+    CONTA.salvarTreino(sim.curso, sim.modo, acertos, total).then((ok) => {
+      if (ok) $("#simResumo").textContent += " Nota guardada na sua conta.";
+    });
+  }
 
   // Desempenho por tópico, na ordem oficial do exame
   const caixaTopicos = $("#simTopicos");
