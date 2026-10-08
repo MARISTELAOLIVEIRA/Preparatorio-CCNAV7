@@ -177,7 +177,9 @@ window.CONTA = (function () {
       }
       msg.textContent = "Um instante…";
       if (aba === "criar") {
-        const { data, error } = await nuvem.auth.signUp({ email: email, password: senha, options: { data: { nome: nome } } });
+        // o link de confirmação do e-mail volta para esta página (o endereço precisa estar nas Redirect URLs do Supabase)
+        const voltarPara = location.origin + location.pathname.replace(/[^/]*$/, "");
+        const { data, error } = await nuvem.auth.signUp({ email: email, password: senha, options: { data: { nome: nome }, emailRedirectTo: voltarPara } });
         if (error) {
           msg.textContent = explicarErro(error, "criar");
         } else if (!data.session) {
