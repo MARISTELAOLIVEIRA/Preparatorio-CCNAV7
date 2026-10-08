@@ -7,7 +7,7 @@ Este repositório contém o site do preparatório CCNA da Profa. Maristela Olive
 - Site estático em arquivos separados e formatados, para facilitar a manutenção e o estudo do código pela professora: `index.html` e `treinos.html` (estrutura), `css/ccna.css` (componentes do preparatório; as cores, as fontes, a barra do topo e o fundo vêm de `assets/css/estilo.css` e `neon.css`, comuns a todos os sites da Stela), `js/dados.js` e `js/questoes.js` (conteúdo), `js/site.js` e `js/treinos.js` (funções). Não há build, framework nem dependências.
 - Será publicado no GitHub Pages a partir da branch `main`, na raiz.
 - Idioma: português do Brasil. Público: alunos do preparatório (matrícula aberta à comunidade, não necessariamente alunos da faculdade).
-- `gerador-area-turma.html` é uma ferramenta **local** da professora. **Não deve ser publicada** (mantê-la fora do repositório publicado ou no `.gitignore`).
+- `gerador-area-turma.html` era a ferramenta **local** que gerava a área com senha; não é mais usada. **Não deve ser publicada** (mantê-la fora do repositório publicado ou no `.gitignore`).
 
 ## Estrutura dos arquivos
 
@@ -38,13 +38,12 @@ Este repositório contém o site do preparatório CCNA da Profa. Maristela Olive
 - A cada tentativa, o simulado sorteia a quantidade escolhida (10, 15, 30 ou todas), dando prioridade às questões que não caíram na tentativa anterior, e embaralha questões e opções. Quanto maior o banco, melhor.
 - Arquivos `.pkt` criados pela professora podem ir para a pasta `exercicios/` e ser ligados pelo campo `pkt` da questão.
 
-## Área da turma (protegida por senha)
+## Área da turma (sem senha desde 08/10/2026)
 
-- Conteúdo protegido: links do Teams, do Moodle, do grupo de avisos e URLs dos vídeos.
-- Formato: JSON `{"links":[{"t","d","u"}], "videos":{"1":"url"}}`, criptografado com **AES-GCM 256**, chave derivada da senha por **PBKDF2-SHA-256 com 250.000 iterações**. O valor de `AREA_TURMA` é base64 de `salt (16 bytes) + iv (12 bytes) + texto cifrado`.
-- Para atualizar: a professora usa o `gerador-area-turma.html` e cola o resultado em `AREA_TURMA`, no `js/dados.js`. Se for gerar por código, use exatamente esses parâmetros.
-- **Nunca** colocar links da turma, URLs de vídeos ou a senha em texto aberto no `index.html`, no `js/dados.js`, em commits ou em mensagens de commit.
-- A senha é trocada a cada semestre.
+- Os links da turma (Teams e gravações) só abrem com a conta institucional do Senac, por isso não há mais senha
+  nem criptografia (pedido da Stela em 08/10/2026).
+- Links em `AREA_TURMA` (lista de `{ t, d, u }`) e gravações em `VIDEOS_LINKS` (número do vídeo → link), no `js/dados.js`.
+- O `gerador-area-turma.html` não é mais usado.
 
 ## Identidade visual (o padrão dos sites da Stela, desde outubro de 2026)
 

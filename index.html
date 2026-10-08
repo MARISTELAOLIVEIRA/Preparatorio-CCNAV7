@@ -20,16 +20,15 @@
     e css/ccna.css (os componentes deste preparatório).
   - Conteúdo (encontros, módulos, vídeos, perguntas, links): js/dados.js.
   - Funções da página: js/site.js.
-  - Área da turma (Teams, Moodle, WhatsApp e links dos vídeos) é protegida por senha.
-    Para criar ou trocar a senha e os links, abra o arquivo gerador-area-turma.html,
-    preencha, clique em Gerar e cole o resultado em AREA_TURMA, no js/dados.js.
+  - Área da turma (Teams e links dos vídeos): links abertos em AREA_TURMA e VIDEOS_LINKS,
+    no js/dados.js. Não há senha: os links só abrem com a conta institucional.
   ============================================================
 -->
 <link rel="stylesheet" href="assets/css/estilo.css">
 <link rel="stylesheet" href="assets/css/neon.css?v=4">
-<link rel="stylesheet" href="css/ccna.css">
-<script src="js/dados.js" defer></script>
-<script src="js/site.js" defer></script>
+<link rel="stylesheet" href="css/ccna.css?v=2">
+<script src="js/dados.js?v=4" defer></script>
+<script src="js/site.js?v=3" defer></script>
 </head>
 <body>
 <!-- ===================== BARRA DO TOPO (igual em todos os sites) ===================== -->
@@ -165,13 +164,8 @@
 <section id="turma">
   <div class="wrap">
     <h2>Área da turma</h2>
-    <p class="intro">Links do Teams, do Moodle e dos vídeos, só para alunos matriculados. Use a senha informada no primeiro encontro.</p>
-    <form class="painel corte cofre" id="cofreForm" autocomplete="off">
-      <label for="cofreSenha">Senha da turma</label>
-      <div class="linha-senha"><input id="cofreSenha" type="password" required><button type="submit">Entrar</button></div>
-      <p class="retorno" id="cofreMsg" aria-live="polite"></p>
-    </form>
-    <div class="links" id="cofreLinks" hidden></div>
+    <p class="intro">Links do Teams e das gravações, só para alunos matriculados: eles abrem com a sua conta institucional do Senac.</p>
+    <div class="links" id="areaLinks"></div>
   </div>
 </section>
 
