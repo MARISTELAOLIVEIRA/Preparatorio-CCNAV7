@@ -153,3 +153,41 @@
   width: clamp(11rem, 26vw, 15rem);
   height: auto;
 }
+
+/* ---------- barra numa linha só: este preparatório tem 8 links no menu ---------- */
+/* até 1400px os links ficam no botão Menu (como no celular); acima disso, lado a lado e mais juntos */
+@media (max-width: 1400px) {
+  .nav {
+    display: none;
+  }
+
+  .btn-menu {
+    display: inline-block;
+  }
+
+  .nav.aberto {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    order: 3;
+    flex-basis: 100%;
+    border-top: 1px solid var(--borda);
+  }
+
+  .nav.aberto a {
+    padding: .8rem .1rem;
+    font-size: 1rem;
+    color: var(--texto);
+  }
+
+  .nav.aberto a + a {
+    border-top: 1px solid var(--borda);
+  }
+}
+
+@media (min-width: 1401px) {
+  .nav {
+    flex-wrap: nowrap;
+    gap: 1.1rem;
+  }
+}
