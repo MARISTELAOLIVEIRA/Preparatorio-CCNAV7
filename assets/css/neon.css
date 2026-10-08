@@ -191,3 +191,35 @@
     gap: 1.1rem;
   }
 }
+
+/* ---------- abertura: o logo da Cisco flutuando sobre a janela do traceroute (como nas disciplinas) ---------- */
+.vitrine {
+  position: relative;
+}
+
+.logo-flutua {
+  --t: clamp(4.4rem, 8vw, 6.2rem);
+  position: absolute;
+  z-index: 2;
+  top: -2.4rem;
+  right: -1.2rem;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, .7) inset,
+    0 0 0 1px rgba(0, 0, 0, .07),
+    0 24px 50px -18px rgba(0, 0, 0, .7),
+    0 0 70px -10px var(--brilho-1);
+  animation: flutua 6s ease-in-out infinite;
+}
+
+@keyframes flutua {
+  50% {
+    transform: translateY(-10px) rotate(-4deg);
+  }
+}
+
+@media (max-width: 860px) {
+  .logo-flutua {
+    top: -1.8rem;
+    right: .6rem;
+  }
+}
