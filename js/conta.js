@@ -24,6 +24,28 @@ window.CONTA = (function () {
     if (usuario) funcao(usuario);
   }
 
+  // mensagens do Supabase (em inglês) traduzidas para o aluno
+  function explicarErro(error, aba) {
+    const texto = (error && error.message ? error.message : "").toLowerCase();
+    const codigo = error && error.code ? error.code : "";
+    if (codigo === "email_not_confirmed" || texto.includes("not confirmed")) {
+      return "Falta confirmar o seu e-mail: abra o link que enviamos (confira também o spam) e tente de novo.";
+    }
+    if (texto.includes("already registered") || codigo === "user_already_exists") {
+      return "Este e-mail já tem conta. Use a aba Já tenho conta.";
+    }
+    if (texto.includes("rate limit") || codigo === "over_email_send_rate_limit") {
+      return "Muitas contas criadas agora há pouco. Espere alguns minutos e tente de novo.";
+    }
+    if (texto.includes("password")) {
+      return "A senha precisa ter pelo menos 6 letras ou números.";
+    }
+    if (aba === "entrar") {
+      return "E-mail ou senha não conferem. Ainda não tem conta? Use a aba Criar conta.";
+    }
+    return "Não deu para criar a conta agora. Confira o e-mail e tente de novo.";
+  }
+
   const escapar = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const primeiroNome = (u) => ((u && u.user_metadata && u.user_metadata.nome) || (u && u.email) || "").split(/[\s@]/)[0];
 
@@ -157,7 +179,7 @@ window.CONTA = (function () {
       if (aba === "criar") {
         const { data, error } = await nuvem.auth.signUp({ email: email, password: senha, options: { data: { nome: nome } } });
         if (error) {
-          msg.textContent = "Não deu para criar a conta: " + error.message;
+          msg.textContent = explicarErro(error, "criar");
         } else if (!data.session) {
           msg.textContent = "Conta criada! Confira o seu e-mail e clique no link de confirmação. Depois, entre aqui.";
         } else {
@@ -166,7 +188,7 @@ window.CONTA = (function () {
       } else {
         const { error } = await nuvem.auth.signInWithPassword({ email: email, password: senha });
         if (error) {
-          msg.textContent = "E-mail ou senha não conferem. Ainda não tem conta? Use a aba Criar conta.";
+          msg.textContent = explicarErro(error, "entrar");
         } else {
           janela.close();
         }

@@ -15,7 +15,7 @@ create table if not exists prep_professoras (
 );
 insert into prep_professoras (id, email)
   select id, email from auth.users
-  where lower(email) = lower('maristela33781197@edu.df.senac.br')
+  where lower(email) = lower('maristela.oliveira@df.senac.br')
   on conflict do nothing;
 
 -- responde "sim" se quem está logado é professora (usada nas regras abaixo)
