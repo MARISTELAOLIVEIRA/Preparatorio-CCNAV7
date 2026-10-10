@@ -188,7 +188,53 @@
 @media (min-width: 1401px) {
   .nav {
     flex-wrap: nowrap;
-    gap: 1.1rem;
+    gap: .9rem;
+  }
+}
+
+/* com o botão Entrar, a barra só cabe numa linha se o botão de pausa for só o ícone:
+   em telas estreitas (até 700px) e com os 8 links lado a lado (acima de 1400px).
+   O texto continua lá para leitores de tela. */
+@media (max-width: 700px), (min-width: 1401px) {
+  #btn-movimento {
+    width: 2.1rem;
+    padding: 0;
+    justify-content: center;
+  }
+
+  #btn-movimento .rotulo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* celular: botões mais juntos, para o logo, o Menu e os ajustes ficarem na mesma linha */
+@media (max-width: 520px) {
+  .barra .envolve {
+    gap: .6rem;
+  }
+
+  .ajustes {
+    gap: .25rem;
+  }
+
+  .ajustes button,
+  .btn-menu {
+    padding: .3rem .6rem;
+  }
+
+  .ajustes .marca {
+    margin-left: .4rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .ajustes .marca {
+    margin-left: .2rem;
   }
 }
 
