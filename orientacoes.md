@@ -27,6 +27,10 @@ Este repositório contém o site do preparatório CCNA da Profa. Maristela Olive
 8. `README.md`: escrito para os alunos, com humor de redes e o estilo cyberpunk do site. A seção da professora fica recolhida no final.
 9. Scripts comuns (não `type="module"`), para o site abrir com duplo clique, sem servidor.
 
+## Barra do topo
+
+- O menu da `index.html` tem **8 links, no máximo**. O `assets/css/neon.css` foi ajustado para esses 8: até 1400 px eles ficam no botão Menu e, acima disso, numa linha só. Um 9º link quebra a barra nas telas grandes (aconteceu em 16/10/2026 com o link da revisão do ITN). Página nova entra como cartão na seção Treinos, não no menu.
+
 ## Estilo do código
 
 - A professora estuda e contribui com o código: priorizar legibilidade. Uma declaração por linha, indentação de 2 espaços, nomes descritivos em português e comentários curtos explicando o porquê.
