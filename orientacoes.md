@@ -88,4 +88,6 @@ Este repositório contém o site do preparatório CCNA da Profa. Maristela Olive
   Não mexer nas tabelas do StelaCore (`players`, `scores`).
 - `js/conta.js`: cliente do Supabase, botão Entrar, janela de login e as funções `CONTA.salvarProgresso`,
   `CONTA.carregarProgresso` e `CONTA.salvarTreino`. A chave é a pública (`sb_publishable`); a secreta nunca vai no site.
-- `painel.html` + `js/painel.js`: painel da professora (quem está em `prep_professoras`), com tabela e CSV.
+- `painel.html` + `js/painel.js`: painel da professora (quem está em `prep_professoras`), com tabela e CSV: simulados, XP da revisão, XP da maratona e posição no ranking.
+- XP da Maratona e da Revisão do ITN (16/10/2026): com login, vai para `prep_treinos` (treino `maratona:fase3` ou `revisao:e3-j1`, acertos = XP, total = XP máximo, modo = medalha ou `revisao`). Ao entrar, o site junta os recordes da nuvem com os do navegador (vale o maior).
+- Ranking da turma (`js/ranking.js`, em `treinos.html#ranking` e `revisao-itn.html#ranking`): função `prep_ranking` (seção 6 do SQL), só para quem está logado, com o primeiro nome, a inicial do sobrenome e o XP. Para ativar, rode o `supabase/tabelas-preparatorios.sql` de novo no SQL Editor.

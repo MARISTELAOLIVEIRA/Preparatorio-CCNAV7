@@ -22,11 +22,12 @@
 -->
 <link rel="stylesheet" href="assets/css/estilo.css">
 <link rel="stylesheet" href="assets/css/neon.css?v=5">
-<link rel="stylesheet" href="css/ccna.css?v=5">
+<link rel="stylesheet" href="css/ccna.css?v=6">
 <script src="js/questoes.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
-<script src="js/conta.js?v=3" defer></script>
-<script src="js/treinos.js?v=3" defer></script>
+<script src="js/conta.js?v=4" defer></script>
+<script src="js/treinos.js?v=4" defer></script>
+<script src="js/ranking.js?v=1" defer></script>
 </head>
 <body>
 <!-- ===================== BARRA DO TOPO (igual em todos os sites) ===================== -->
@@ -40,6 +41,7 @@
       <a href="index.html">Início</a>
       <a href="#simulado" aria-current="page">Simulado</a>
       <a href="#maratona">Maratona</a>
+      <a href="#ranking">Ranking</a>
       <a href="#subredes">Sub-redes</a>
       <a href="revisao-itn.html">Revisão ITN</a>
       <a href="index.html#turma">Área da turma</a>
@@ -235,6 +237,19 @@
         <button type="button" class="sec" id="marVoltar">Escolher outra fase</button>
       </div>
       <p class="placar mar-copiado" id="marCopiado" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<section id="ranking">
+  <div class="wrap">
+    <h2>Ranking da turma</h2>
+    <p class="intro">A soma do melhor XP de cada fase da Maratona de sub-redes e de cada minijogo da Revisão do ITN. Para aparecer, entre com a sua conta (botão Entrar, no topo): os colegas veem só o seu primeiro nome, a inicial do sobrenome e o XP.</p>
+    <div class="painel corte ranking" data-ranking>
+      <div class="ranking-lista" aria-live="polite"></div>
+      <div class="acoes">
+        <button type="button" class="sec ranking-atualizar">Atualizar o ranking</button>
+      </div>
     </div>
   </div>
 </section>

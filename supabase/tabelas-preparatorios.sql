@@ -1,5 +1,5 @@
 -- =====================================================================
--- Progresso dos alunos dos preparatórios (piloto: CCNA) · 08/10/2026
+-- Progresso dos alunos dos preparatórios (piloto: CCNA) · 08/10/2026 (ranking: 16/10/2026)
 -- Rode tudo isto UMA vez no SQL Editor do Supabase (projeto do StelaCore).
 -- Não mexe nas tabelas do StelaCore (players e scores): tudo aqui começa com prep_.
 -- Pode rodar de novo sem medo: os comandos só criam o que ainda não existe.
@@ -115,6 +115,55 @@ create policy "aluno grava os próprios treinos" on prep_treinos
   for insert with check (aluno_id = auth.uid());
 -- prep_professoras fica sem regra de propósito: ninguém lê pela internet
 -- (só a função prep_eh_professora, que roda por dentro do banco).
+
+-- =====================================================================
+-- 6. Ranking da turma (16/10/2026)
+--    A Maratona de sub-redes e a Revisão do ITN gravam o XP em prep_treinos:
+--    treino 'maratona:fase3' ou 'revisao:e3-j1', acertos = XP e total = XP máximo.
+--    Vale o melhor resultado de cada fase e de cada minijogo.
+--    Quem está logado vê só o primeiro nome, a inicial do sobrenome e o XP
+--    dos colegas: nada de e-mail. Sem login, a função não devolve nada.
+-- =====================================================================
+create or replace function prep_ranking(p_preparatorio text default 'ccna')
+returns table (posicao bigint, nome text, xp_revisao bigint, xp_maratona bigint, xp_total bigint, eu boolean)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  with melhores as (
+    select aluno_id, treino, max(acertos) as xp
+    from prep_treinos
+    where preparatorio = p_preparatorio
+      and (treino like 'revisao:%' or treino like 'maratona:%')
+    group by aluno_id, treino
+  ),
+  somas as (
+    select aluno_id,
+           coalesce(sum(xp) filter (where treino like 'revisao:%'), 0) as xp_revisao,
+           coalesce(sum(xp) filter (where treino like 'maratona:%'), 0) as xp_maratona
+    from melhores
+    group by aluno_id
+  )
+  select rank() over (order by s.xp_revisao + s.xp_maratona desc) as posicao,
+         -- "Maria da Silva" vira "Maria S." (primeiro nome e inicial do último sobrenome)
+         initcap(p.partes[1])
+           || case when array_length(p.partes, 1) > 1
+                   then ' ' || upper(left(p.partes[array_length(p.partes, 1)], 1)) || '.'
+                   else '' end as nome,
+         s.xp_revisao,
+         s.xp_maratona,
+         s.xp_revisao + s.xp_maratona as xp_total,
+         s.aluno_id = auth.uid() as eu
+  from somas s
+  join prep_alunos a on a.id = s.aluno_id
+  cross join lateral (select regexp_split_to_array(trim(a.nome), '\s+') as partes) p
+  where auth.uid() is not null
+  order by posicao, nome
+  limit 50;
+$$;
+revoke all on function prep_ranking(text) from public, anon;
+grant execute on function prep_ranking(text) to authenticated;
 
 -- Confira: esta consulta deve mostrar a sua conta de professora.
 -- Se vier vazia, crie a conta pelo botão Entrar do site e rode este arquivo de novo.

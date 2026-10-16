@@ -1,7 +1,8 @@
 /* ==============================================================
    Trilha de revisão do ITN (revisao-itn.html)
    Usa ESTACOES e NIVEIS de js/revisao-dados.js, carregado antes deste arquivo.
-   O recorde de cada minijogo fica salvo só neste navegador.
+   O recorde de cada minijogo fica salvo neste navegador e, com login
+   (js/conta.js), também na conta do aluno, para o ranking da turma (js/ranking.js).
 
    Índice
    1. Utilidades
@@ -142,7 +143,49 @@ function registrar(e, j, xp, extras) {
   salvarRecordes(recordes);
   atualizarPainel();
   atualizarEstacao(e);
+
+  // Logado? O XP também vai para a conta (o ranking usa o melhor de cada minijogo)
+  if (novoRecorde && window.CONTA && CONTA.usuario()) {
+    const jogo = ESTACOES[e].jogos[j];
+    CONTA.salvarTreino("revisao:" + id, "revisao", xp, maximoDoJogo(jogo)).then((ok) => {
+      if (ok && window.RANKING) RANKING.atualizar();
+    });
+  }
+
   return { novoRecorde, novas, anterior };
+}
+
+// Ao entrar com a conta: traz os recordes da nuvem para este navegador
+// e manda para a nuvem os recordes feitos aqui sem login
+async function sincronizarComConta() {
+  const linhas = await CONTA.carregarTreinos("revisao:");
+  if (!linhas) return;
+  const recordes = lerRecordes();
+  const naNuvem = {};
+  linhas.forEach((linha) => {
+    const id = linha.treino.slice("revisao:".length);
+    naNuvem[id] = Math.max(naNuvem[id] || 0, linha.acertos);
+  });
+
+  let enviou = false;
+  for (let e = 0; e < ESTACOES.length; e++) {
+    for (let j = 0; j < ESTACOES[e].jogos.length; j++) {
+      const id = idDoJogo(e, j);
+      const local = recordes.jogos[id];
+      const nuvem = naNuvem[id];
+      if (nuvem !== undefined && (local === undefined || nuvem > local)) {
+        recordes.jogos[id] = Math.min(nuvem, maximoDoJogo(ESTACOES[e].jogos[j]));
+      } else if (local !== undefined && (nuvem === undefined || local > nuvem)) {
+        if (await CONTA.salvarTreino("revisao:" + id, "revisao", local, maximoDoJogo(ESTACOES[e].jogos[j]))) enviou = true;
+      }
+    }
+  }
+
+  salvarRecordes(recordes);
+  atualizarPainel();
+  ESTACOES.forEach((_, e) => atualizarEstacao(e));
+  document.querySelectorAll(".rev-jogo").forEach((cartao) => cartao.dispatchEvent(new Event("recorde")));
+  if (enviou && window.RANKING) RANKING.atualizar();
 }
 
 
@@ -306,6 +349,7 @@ function cartaoDoJogo(e, j) {
     final.appendChild(deNovo);
   };
 
+  cartao.addEventListener("recorde", mostrarRecorde);
   mostrarRecorde();
   comecar();
   return cartao;
@@ -792,6 +836,12 @@ MINIJOGOS.terminal = (jogo, area, terminar) => {
 montarEstacoes();
 atualizarPainel();
 montando = false;
+
+if (window.CONTA) {
+  CONTA.aoMudar((usuario) => {
+    if (usuario) sincronizarComConta();
+  });
+}
 
 // Abre a estação do endereço (#estacao-3, por exemplo)
 const pedida = location.hash && document.querySelector(location.hash);

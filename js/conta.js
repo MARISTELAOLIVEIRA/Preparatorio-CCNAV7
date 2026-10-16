@@ -105,6 +105,25 @@ window.CONTA = (function () {
     return !error;
   }
 
+  // os treinos do próprio aluno cujo nome começa com o prefixo ("maratona:", "revisao:")
+  async function carregarTreinos(prefixo) {
+    if (!usuario) return null;
+    const { data, error } = await nuvem
+      .from("prep_treinos")
+      .select("treino, modo, acertos, total")
+      .eq("aluno_id", usuario.id)
+      .eq("preparatorio", PREPARATORIO)
+      .like("treino", prefixo + "%");
+    return error ? null : data;
+  }
+
+  // o ranking da turma (função prep_ranking do SQL); null se ainda não foi ativado
+  async function ranking() {
+    if (!usuario) return null;
+    const { data, error } = await nuvem.rpc("prep_ranking", { p_preparatorio: PREPARATORIO });
+    return error ? null : data;
+  }
+
   /* ---------- botão na barra e janela de login ---------- */
 
   const botao = document.createElement("button");
@@ -126,7 +145,7 @@ window.CONTA = (function () {
     if (usuario) {
       janela.innerHTML = `
         <h2 id="conta-titulo">Sua conta</h2>
-        <p>Conectado como <strong>${escapar(usuario.email)}</strong>. Seu progresso e as notas dos treinos estão sendo guardados.</p>
+        <p>Conectado como <strong>${escapar(usuario.email)}</strong>. Seu progresso, as notas dos treinos e o XP da revisão e da maratona estão sendo guardados.</p>
         <div class="conta-botoes">
           <button type="button" data-acao="sair">Sair</button>
           <button type="button" data-acao="fechar" class="sec">Fechar</button>
@@ -150,8 +169,9 @@ window.CONTA = (function () {
           <button type="submit">Entrar</button>
           <button type="button" data-acao="fechar" class="sec">Cancelar</button>
         </div>
-        <p class="conta-lgpd">Guardamos só o seu nome, o e-mail, os módulos marcados e as notas dos treinos, para a
-          professora acompanhar a turma. Nada é compartilhado.</p>
+        <p class="conta-lgpd">Guardamos só o seu nome, o e-mail, os módulos marcados e as notas e o XP dos treinos, para a
+          professora acompanhar a turma. No ranking da turma, os colegas logados veem só o seu primeiro nome, a inicial
+          do sobrenome e o XP. Nada é compartilhado fora do preparatório.</p>
       </form>`;
     let aba = "entrar";
     const form = janela.querySelector("form");
@@ -224,5 +244,5 @@ window.CONTA = (function () {
     });
   }
 
-  return { aoMudar, carregarProgresso, salvarProgresso, salvarTreino, nuvem: () => nuvem, usuario: () => usuario };
+  return { aoMudar, carregarProgresso, salvarProgresso, salvarTreino, carregarTreinos, ranking, nuvem: () => nuvem, usuario: () => usuario };
 })();

@@ -1,7 +1,7 @@
 /* ===================================================================
    painel.js: o painel da professora (piloto CCNA · 08/10/2026)
-   Mostra quem entrou no preparatório, os módulos marcados e as notas dos
-   treinos. Só aparece para quem está em prep_professoras (veja o SQL em
+   Mostra quem entrou no preparatório, os módulos marcados, as notas dos
+   simulados e o XP da Revisão do ITN e da Maratona de sub-redes, com a posição no ranking. Só aparece para quem está em prep_professoras (veja o SQL em
    supabase/tabelas-preparatorios.sql): para os outros, o banco não entrega nada.
    =================================================================== */
 
@@ -57,13 +57,30 @@
         Object.keys(MODULOS).forEach((curso) => {
           cursos[curso] = feitos.filter((item) => item.startsWith(curso + "-")).length + " de " + MODULOS[curso].length;
         });
-        const seus = treinos.data.filter((t) => t.aluno_id === acesso.aluno_id);
+        const todos = treinos.data.filter((t) => t.aluno_id === acesso.aluno_id);
+        // simulados: treino = curso ("ITN"); maratona e revisão: "maratona:fase3", "revisao:e3-j1" (acertos = XP)
+        const seus = todos.filter((t) => !t.treino.includes(":"));
+        const xp = (prefixo) => {
+          const melhor = {};
+          todos.filter((t) => t.treino.startsWith(prefixo)).forEach((t) => {
+            melhor[t.treino] = Math.max(melhor[t.treino] || 0, t.acertos);
+          });
+          return Object.values(melhor).reduce((soma, valor) => soma + valor, 0);
+        };
+        const xpRevisao = xp("revisao:");
+        const xpMaratona = xp("maratona:");
         const pct = (t) => Math.round((t.acertos / t.total) * 100);
         const melhor = seus.length ? Math.max(...seus.map(pct)) + "%" : "";
         const ultimo = seus.length ? pct(seus[seus.length - 1]) + "% em " + data(seus[seus.length - 1].feito_em) : "";
-        return { nome: aluno.nome, email: aluno.email, acesso: data(acesso.ultimo_acesso), cursos, treinos: seus.length, melhor, ultimo };
+        return { nome: aluno.nome, email: aluno.email, acesso: data(acesso.ultimo_acesso), cursos, treinos: seus.length, melhor, ultimo, xpRevisao, xpMaratona, xp: xpRevisao + xpMaratona };
       })
       .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+
+    // posição no ranking (empate = mesma posição, como na função prep_ranking)
+    const porXp = [...linhas].sort((a, b) => b.xp - a.xp);
+    linhas.forEach((l) => {
+      l.posicao = l.xp > 0 ? porXp.findIndex((outro) => outro.xp === l.xp) + 1 + "º" : "";
+    });
 
     status.textContent = linhas.length
       ? `${linhas.length} ${linhas.length === 1 ? "aluno entrou" : "alunos entraram"} no preparatório.`
@@ -73,12 +90,12 @@
     const cursos = Object.keys(MODULOS);
     caixa.innerHTML = linhas.length
       ? `<table>
-          <thead><tr><th scope="col">Aluno</th><th scope="col">Último acesso</th>${cursos.map((c) => `<th scope="col">${c}</th>`).join("")}<th scope="col">Treinos</th><th scope="col">Melhor nota</th><th scope="col">Último treino</th></tr></thead>
+          <thead><tr><th scope="col">Aluno</th><th scope="col">Último acesso</th>${cursos.map((c) => `<th scope="col">${c}</th>`).join("")}<th scope="col">Simulados</th><th scope="col">Melhor nota</th><th scope="col">Último simulado</th><th scope="col">XP revisão</th><th scope="col">XP maratona</th><th scope="col">Ranking</th></tr></thead>
           <tbody>${linhas
             .map(
               (l) => `<tr><th scope="row">${escapar(l.nome)}<small>${escapar(l.email)}</small></th><td>${l.acesso}</td>${cursos
                 .map((c) => `<td>${l.cursos[c]}</td>`)
-                .join("")}<td>${l.treinos}</td><td>${l.melhor}</td><td>${l.ultimo}</td></tr>`,
+                .join("")}<td>${l.treinos}</td><td>${l.melhor}</td><td>${l.ultimo}</td><td>${l.xpRevisao}</td><td>${l.xpMaratona}</td><td>${l.posicao}</td></tr>`,
             )
             .join("")}</tbody>
         </table>`
@@ -88,8 +105,8 @@
   // planilha para abrir no Excel (separada por ponto e vírgula)
   $("#painelCsv").addEventListener("click", () => {
     const cursos = Object.keys(MODULOS);
-    const cab = ["Aluno", "E-mail", "Último acesso", ...cursos, "Treinos", "Melhor nota", "Último treino"];
-    const corpo = linhas.map((l) => [l.nome, l.email, l.acesso, ...cursos.map((c) => l.cursos[c]), l.treinos, l.melhor, l.ultimo]);
+    const cab = ["Aluno", "E-mail", "Último acesso", ...cursos, "Simulados", "Melhor nota", "Último simulado", "XP revisão", "XP maratona", "Ranking"];
+    const corpo = linhas.map((l) => [l.nome, l.email, l.acesso, ...cursos.map((c) => l.cursos[c]), l.treinos, l.melhor, l.ultimo, l.xpRevisao, l.xpMaratona, l.posicao]);
     const csv = [cab, ...corpo].map((linha) => linha.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(";")).join("\n");
     const link = document.createElement("a");
     link.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" }));

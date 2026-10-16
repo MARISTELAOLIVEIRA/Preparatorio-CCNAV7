@@ -2094,3 +2094,53 @@ footer {
 .pausado .rev-jogo .rev-carta {
   transition: none;
 }
+
+
+/* 18. Ranking da turma (js/ranking.js) -------------------------- */
+
+.ranking-lista {
+  overflow-x: auto;
+}
+
+.ranking-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .95rem;
+}
+
+.ranking-tabela th,
+.ranking-tabela td {
+  padding: .5rem .6rem;
+  text-align: left;
+  border-bottom: 1px solid var(--linha);
+}
+
+.ranking-tabela th {
+  font: 600 .85rem var(--f-titulo);
+  color: var(--suave);
+}
+
+.ranking-pos {
+  font: 700 1rem var(--f-mono);
+  width: 3rem;
+}
+
+.ranking-total {
+  font: 700 1rem var(--f-mono);
+  color: var(--srwe);
+  white-space: nowrap;
+}
+
+.ranking-eu td {
+  background: var(--noite);
+  color: var(--ok);
+}
+
+@media (max-width: 520px) {
+  .ranking-tabela th:nth-child(3),
+  .ranking-tabela td:nth-child(3),
+  .ranking-tabela th:nth-child(4),
+  .ranking-tabela td:nth-child(4) {
+    display: none;
+  }
+}

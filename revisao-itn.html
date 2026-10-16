@@ -22,9 +22,12 @@
 -->
 <link rel="stylesheet" href="assets/css/estilo.css">
 <link rel="stylesheet" href="assets/css/neon.css?v=5">
-<link rel="stylesheet" href="css/ccna.css?v=5">
+<link rel="stylesheet" href="css/ccna.css?v=6">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+<script src="js/conta.js?v=4" defer></script>
 <script src="js/revisao-dados.js?v=1" defer></script>
-<script src="js/revisao.js?v=1" defer></script>
+<script src="js/revisao.js?v=2" defer></script>
+<script src="js/ranking.js?v=1" defer></script>
 </head>
 <body>
 <!-- ===================== BARRA DO TOPO (igual em todos os sites) ===================== -->
@@ -39,6 +42,7 @@
       <a href="#trilha" aria-current="page">Revisão ITN</a>
       <a href="treinos.html#maratona">Maratona</a>
       <a href="treinos.html#simulado">Simulado</a>
+      <a href="#ranking">Ranking</a>
       <a href="index.html#turma">Área da turma</a>
     </nav>
       <div class="ajustes">
@@ -109,7 +113,20 @@
         <a class="btn sec" href="treinos.html#maratona">Maratona de sub-redes</a>
       </div>
     </div>
-    <p class="placar">O seu XP fica salvo só neste navegador. <button type="button" class="rev-zerar" id="revZerar">Zerar a trilha</button></p>
+    <p class="placar">Sem login, o seu XP fica só neste navegador. Entrando com a conta, ele fica guardado e entra no ranking. <button type="button" class="rev-zerar" id="revZerar">Zerar a trilha neste navegador</button></p>
+  </div>
+</section>
+
+<section id="ranking">
+  <div class="wrap">
+    <h2>Ranking da turma</h2>
+    <p class="intro">A soma do melhor XP de cada fase da Maratona de sub-redes e de cada minijogo da Revisão do ITN. Para aparecer, entre com a sua conta (botão Entrar, no topo): os colegas veem só o seu primeiro nome, a inicial do sobrenome e o XP.</p>
+    <div class="painel corte ranking" data-ranking>
+      <div class="ranking-lista" aria-live="polite"></div>
+      <div class="acoes">
+        <button type="button" class="sec ranking-atualizar">Atualizar o ranking</button>
+      </div>
+    </div>
   </div>
 </section>
 </main>

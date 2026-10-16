@@ -1021,7 +1021,8 @@ function normalizar(valor, tipo) {
 /* Cinco fases, do binário ao VLSM. Cada campo certo vale 10 XP (5 XP se o
    passo a passo foi aberto antes de responder). Três questões certas
    seguidas dão bônus de combo. A medalha da fase sai da porcentagem de
-   campos certos. O melhor resultado de cada fase fica salvo no navegador. */
+   campos certos. O melhor resultado de cada fase fica salvo no navegador
+   e, com login (conta.js), também na conta do aluno, para o ranking da turma. */
 
 (function maratona() {
   const XP_CAMPO = 10;
@@ -1247,6 +1248,16 @@ function normalizar(valor, tipo) {
     { nome: "prata", minimo: 70 },
     { nome: "bronze", minimo: 50 },
   ];
+
+  // XP máximo de uma fase: 10 por campo e o bônus de combo da 3ª questão em diante
+  const xpMaximo = (questoes) =>
+    questoes.reduce((soma, q) => soma + q.campos.length * XP_CAMPO, 0) + Math.max(0, questoes.length - 2) * XP_COMBO;
+
+  // O mesmo, sem jogar: sorteia uma rodada só para contar os campos
+  const xpMaximoDaFase = (f) => xpMaximo(indices(FASES[f].qtd).map((i) => FASES[f].gerar(i)));
+
+  // "maratona:fase3" é o nome do treino no Supabase
+  const nomeNaNuvem = (f) => "maratona:fase" + (f + 1);
 
   // Estado da fase em andamento
   const jogo = {
@@ -1514,6 +1525,15 @@ function normalizar(valor, tipo) {
 
     $("#marInsignias").textContent = novas.length ? "Insígnias novas: " + novas.join(" · ") : "";
 
+    // Logado? O XP também vai para a conta, para o ranking da turma
+    if (window.CONTA && CONTA.usuario()) {
+      CONTA.salvarTreino(nomeNaNuvem(jogo.fase), nomeMedalha, jogo.xp, xpMaximo(jogo.questoes)).then((ok) => {
+        if (!ok) return;
+        $("#marMensagem").textContent += " XP guardado na sua conta.";
+        if (window.RANKING) RANKING.atualizar();
+      });
+    }
+
     // Texto para colar no chat do Teams
     let nome = "";
     try {
@@ -1544,6 +1564,37 @@ function normalizar(valor, tipo) {
   $("#marRepetir").addEventListener("click", () => comecarFase(jogo.fase));
   $("#marProximaFase").addEventListener("click", () => comecarFase(jogo.fase + 1));
   $("#marVoltar").addEventListener("click", voltarParaFases);
+
+  // Ao entrar com a conta: traz os recordes da nuvem para este navegador
+  // e manda para a nuvem os recordes feitos aqui sem login
+  async function sincronizar() {
+    const linhas = await CONTA.carregarTreinos("maratona:");
+    if (!linhas) return;
+    const recordes = lerRecordes();
+    let enviou = false;
+
+    for (let f = 0; f < FASES.length; f++) {
+      const daFase = linhas.filter((linha) => linha.treino === nomeNaNuvem(f));
+      const melhor = daFase.reduce((a, b) => (!a || b.acertos > a.acertos ? b : a), null);
+      const local = recordes.fases[f];
+      if (melhor && (!local || melhor.acertos > local.xp)) {
+        recordes.fases[f] = { xp: melhor.acertos, medalha: melhor.modo || "sem" };
+      } else if (local && local.xp > 0 && (!melhor || local.xp > melhor.acertos)) {
+        const maximo = Math.max(local.xp, xpMaximoDaFase(f));
+        if (await CONTA.salvarTreino(nomeNaNuvem(f), local.medalha, local.xp, maximo)) enviou = true;
+      }
+    }
+
+    salvarRecordes(recordes);
+    if (!telaFases.hidden) montarFases();
+    if (enviou && window.RANKING) RANKING.atualizar();
+  }
+
+  if (window.CONTA) {
+    CONTA.aoMudar((usuario) => {
+      if (usuario) sincronizar();
+    });
+  }
 
   montarFases();
 })();
