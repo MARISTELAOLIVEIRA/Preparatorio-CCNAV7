@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Treinos CCNA · Profa. Maristela</title>
-<meta name="description" content="Simulado no estilo da prova CCNA, com feedback na hora, e treino de sub-redes.">
+<meta name="description" content="Simulado no estilo da prova CCNA, maratona de sub-redes com passo a passo e treino livre de sub-redes.">
 <link rel="icon" href="assets/img/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
@@ -16,17 +16,17 @@
   ============================================================
   COMO EDITAR (Profa. Maristela)
   - Questões do simulado: js/questoes.js.
-  - Funções desta página (simulado e sub-redes): js/treinos.js.
+  - Funções desta página (simulado, sub-redes e maratona): js/treinos.js.
   - Visual: assets/css/estilo.css e neon.css (comuns) e css/ccna.css (o mesmo da página inicial).
   ============================================================
 -->
 <link rel="stylesheet" href="assets/css/estilo.css">
 <link rel="stylesheet" href="assets/css/neon.css?v=5">
-<link rel="stylesheet" href="css/ccna.css?v=4">
+<link rel="stylesheet" href="css/ccna.css?v=5">
 <script src="js/questoes.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
 <script src="js/conta.js?v=3" defer></script>
-<script src="js/treinos.js?v=2" defer></script>
+<script src="js/treinos.js?v=3" defer></script>
 </head>
 <body>
 <!-- ===================== BARRA DO TOPO (igual em todos os sites) ===================== -->
@@ -39,7 +39,9 @@
     <nav class="nav" id="menu" aria-label="Seções do preparatório">
       <a href="index.html">Início</a>
       <a href="#simulado" aria-current="page">Simulado</a>
+      <a href="#maratona">Maratona</a>
       <a href="#subredes">Sub-redes</a>
+      <a href="revisao-itn.html">Revisão ITN</a>
       <a href="index.html#turma">Área da turma</a>
     </nav>
       <div class="ajustes">
@@ -67,7 +69,7 @@
   <div class="wrap">
     <h1>Treinos</h1>
     <p class="quem"><span class="memoji" title="Profa. Maristela"><span class="memoji-brilho"><span class="memoji-hex"><span class="memoji-rosto"><img src="assets/memoji.png" alt="Memoji da Profa. Maristela" width="48" height="48"></span></span></span></span>&gt; Profa. Maristela_ · Academia Cisco · Senac-DF</p>
-    <p class="sub">Questões no estilo da prova CCNA e treino de sub-redes. Treine quantas vezes quiser.</p>
+    <p class="sub">Questões no estilo da prova CCNA, maratona de sub-redes e treino livre. Treine quantas vezes quiser.</p>
   </div>
 </header>
 
@@ -161,10 +163,86 @@
   </div>
 </section>
 
+<section id="maratona">
+  <div class="wrap">
+    <h2>Maratona de sub-redes</h2>
+    <p class="intro">Cinco fases, do binário ao VLSM. Cada campo certo vale 10 XP; três questões certas seguidas dão combo. Travou? Abra o passo a passo: ele faz a conta com os números da questão, e a questão vale metade do XP. No fim da fase, copie o resultado e cole no chat do Teams.</p>
+
+    <!-- Cola: as duas tabelas que resolvem quase toda sub-rede -->
+    <details class="painel corte mar-cola">
+      <summary>Abrir a cola do número mágico</summary>
+      <div class="mar-tabelas">
+        <table>
+          <caption>Pesos dos bits de um octeto</caption>
+          <tr><th>Bit</th><td>1º</td><td>2º</td><td>3º</td><td>4º</td><td>5º</td><td>6º</td><td>7º</td><td>8º</td></tr>
+          <tr><th>Peso</th><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+        </table>
+        <table>
+          <caption>Prefixos no 4º octeto (no 3º, some 8 ao prefixo: /26 vira /18)</caption>
+          <tr><th>Prefixo</th><th>Máscara</th><th>Bloco</th><th>Hosts</th></tr>
+          <tr><td>/25</td><td>255.255.255.128</td><td>128</td><td>126</td></tr>
+          <tr><td>/26</td><td>255.255.255.192</td><td>64</td><td>62</td></tr>
+          <tr><td>/27</td><td>255.255.255.224</td><td>32</td><td>30</td></tr>
+          <tr><td>/28</td><td>255.255.255.240</td><td>16</td><td>14</td></tr>
+          <tr><td>/29</td><td>255.255.255.248</td><td>8</td><td>6</td></tr>
+          <tr><td>/30</td><td>255.255.255.252</td><td>4</td><td>2</td></tr>
+        </table>
+      </div>
+      <p class="placar">Bloco = 256 − valor da máscara no octeto interessante. Rede = o múltiplo do bloco logo abaixo do IP. Broadcast = próxima rede − 1.</p>
+    </details>
+
+    <!-- 1. Escolher a fase -->
+    <div class="mar-fases" id="marFases"></div>
+    <p class="placar" id="marTotal"></p>
+
+    <!-- 2. Questão da fase -->
+    <div class="painel corte mar-jogo" id="marJogo" hidden>
+      <div class="sim-barra">
+        <span id="marPos"></span>
+        <span class="tag" id="marNomeFase"></span>
+        <span class="sim-placar" id="marXp"></span>
+        <span class="sim-tempo" id="marTempo"></span>
+      </div>
+      <div class="sim-progresso" aria-hidden="true"><i id="marProgresso"></i></div>
+
+      <p class="sim-enunciado" id="marEnunciado"></p>
+      <div class="desafio-ip" id="marDado" aria-live="polite"></div>
+
+      <form id="marForm" novalidate>
+        <div class="campos" id="marCampos"></div>
+        <div class="acoes">
+          <button type="submit" id="marConfirmar">Confirmar</button>
+          <button type="button" id="marProxima" hidden>Próxima questão</button>
+          <button type="button" class="sec" id="marAjuda">Ver o passo a passo</button>
+          <button type="button" class="sec" id="marSair">Sair da fase</button>
+        </div>
+      </form>
+
+      <div class="retorno" id="marRetorno" aria-live="polite"></div>
+      <ol class="passos-conta" id="marPassos" hidden></ol>
+    </div>
+
+    <!-- 3. Resultado da fase -->
+    <div class="painel corte mar-resultado" id="marResultado" hidden>
+      <p class="mar-medalha" id="marMedalha"></p>
+      <h3 id="marNota"></h3>
+      <p class="sim-mensagem" id="marMensagem"></p>
+      <p class="placar" id="marInsignias"></p>
+      <div class="acoes">
+        <button type="button" id="marCopiar">Copiar resultado para o chat</button>
+        <button type="button" class="sec" id="marProximaFase">Próxima fase</button>
+        <button type="button" class="sec" id="marRepetir">Jogar a fase de novo</button>
+        <button type="button" class="sec" id="marVoltar">Escolher outra fase</button>
+      </div>
+      <p class="placar mar-copiado" id="marCopiado" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
 <section id="subredes">
   <div class="wrap">
-    <h2>Treino de sub-redes</h2>
-    <p class="intro">Descubra os dados da sub-rede de cada endereço. Cada verificação mostra na hora o que está certo.</p>
+    <h2>Treino livre de sub-redes</h2>
+    <p class="intro">Sem tempo e sem pontos: descubra os dados da sub-rede de cada endereço. Cada verificação mostra na hora o que está certo, e o passo a passo mostra a conta.</p>
     <div class="painel corte" id="subnet">
       <div class="desafio-ip" id="ipDesafio" aria-live="polite"></div>
       <div class="campos">
@@ -178,9 +256,11 @@
       <div class="acoes">
         <button type="button" id="sVerificar">Verificar</button>
         <button type="button" class="sec" id="sNovo">Novo endereço</button>
+        <button type="button" class="sec" id="sPassoAPasso">Ver o passo a passo</button>
         <button type="button" class="sec" id="sMostrar">Mostrar resposta</button>
       </div>
       <div class="retorno" id="sRetorno" aria-live="polite"></div>
+      <ol class="passos-conta" id="sPassos" hidden></ol>
       <p class="placar" id="sPlacar"></p>
     </div>
   </div>

@@ -10,7 +10,9 @@
    5. Simulado: cronômetro (modo prova)
    6. Simulado: resultado
    7. Simulado: imagem do resultado
-   8. Treino de sub-redes
+   8. Sub-redes: cálculo e passo a passo
+   9. Treino livre de sub-redes
+   10. Maratona de sub-redes
    ============================================================== */
 
 
@@ -801,16 +803,138 @@ botaoCompartilhar.addEventListener("click", async () => {
 });
 
 
-/* 8. Treino de sub-redes --------------------------------------- */
+/* 8. Sub-redes: cálculo e passo a passo ------------------------ */
+/* Funções usadas pelo treino livre (seção 9) e pela maratona (seção 10). */
 
-(function subRedes() {
-  // IP em texto <-> número de 32 bits
-  // (usa multiplicação e divisão em vez de << e >>, que trabalham com números com sinal)
-  const ipParaNumero = (ip) => ip.split(".").reduce((soma, octeto) => soma * 256 + Number(octeto), 0);
-  const numeroParaIp = (n) => [24, 16, 8, 0].map((desloc) => Math.floor(n / 2 ** desloc) % 256).join(".");
+// IP em texto <-> número de 32 bits
+// (usa multiplicação e divisão em vez de << e >>, que trabalham com números com sinal)
+const ipParaNumero = (ip) => ip.split(".").reduce((soma, octeto) => soma * 256 + Number(octeto), 0);
+const numeroParaIp = (n) => [24, 16, 8, 0].map((desloc) => Math.floor(n / 2 ** desloc) % 256).join(".");
 
-  const sorteio = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+// Número inteiro entre min e max (incluindo os dois)
+const sorteio = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
 
+// Um item qualquer da lista
+const umDe = (lista) => lista[Math.floor(Math.random() * lista.length)];
+
+// "1º", "2º"...
+const ordinal = (n) => n + "º";
+
+// 26 -> "255.255.255.192"
+const prefixoParaMascara = (prefixo) => numeroParaIp(2 ** 32 - 2 ** (32 - prefixo));
+
+// 192 -> "11000000"
+const paraBinario = (n) => n.toString(2).padStart(8, "0");
+
+// Um IP privado qualquer (das faixas 10, 172.16 a 172.31 e 192.168)
+const ipPrivado = () => {
+  const faixa = umDe(["10", "172", "192"]);
+  if (faixa === "10") return ["10", sorteio(0, 255), sorteio(0, 255), sorteio(1, 254)].join(".");
+  if (faixa === "172") return ["172", sorteio(16, 31), sorteio(0, 255), sorteio(1, 254)].join(".");
+  return ["192", "168", sorteio(0, 255), sorteio(1, 254)].join(".");
+};
+
+// Todos os dados da sub-rede de um IP
+function calcularSubRede(ip, prefixo) {
+  const tamanho = 2 ** (32 - prefixo); // endereços no bloco
+  const n = ipParaNumero(ip);
+  const rede = n - (n % tamanho);      // múltiplo do bloco logo abaixo do IP
+
+  return {
+    ip,
+    prefixo,
+    rede: numeroParaIp(rede),
+    broad: numeroParaIp(rede + tamanho - 1),
+    prim: numeroParaIp(rede + 1),
+    ult: numeroParaIp(rede + tamanho - 2),
+    hosts: String(tamanho - 2),
+    masc: prefixoParaMascara(prefixo),
+  };
+}
+
+// O passo a passo do "número mágico", com os números deste IP
+function passosSubRede(ip, prefixo) {
+  const r = calcularSubRede(ip, prefixo);
+  const bitsHost = 32 - prefixo;
+  const passos = [];
+
+  // /8, /16 e /24: a máscara termina no fim de um octeto, não há octeto "quebrado"
+  if (prefixo % 8 === 0) {
+    const cheios = prefixo / 8;
+    passos.push(`O /${prefixo} tem ${prefixo} bits de rede: são ${cheios} octetos inteiros. A máscara é ${r.masc}.`);
+    passos.push(`Rede: copie os ${cheios} primeiros octetos do IP e coloque 0 no resto: ${r.rede}.`);
+    passos.push(`Broadcast: os mesmos octetos e 255 no resto: ${r.broad}.`);
+    passos.push(`Primeiro host = rede + 1: ${r.prim}. Último host = broadcast − 1: ${r.ult}.`);
+    passos.push(`Hosts: 32 − ${prefixo} = ${bitsHost} bits de host. 2^${bitsHost} − 2 = ${r.hosts} (tira a rede e o broadcast).`);
+    return passos;
+  }
+
+  const octetos = ip.split(".").map(Number);
+  const k = Math.floor(prefixo / 8);      // índice do octeto interessante (0 = 1º)
+  const bitsRedeNoOcteto = prefixo % 8;
+  const bloco = 2 ** (8 - bitsRedeNoOcteto);
+  const valor = octetos[k];
+  const inicio = Math.floor(valor / bloco) * bloco;
+  const fim = inicio + bloco - 1;
+  const cheios = k * 8;
+
+  // 1. Octeto interessante
+  let texto = `Ache o octeto interessante. O /${prefixo} tem ${prefixo} bits de rede.`;
+  texto += cheios > 0 ? ` Os ${k} primeiros octetos usam ${cheios} bits` : "";
+  texto += ` e sobram ${bitsRedeNoOcteto} ${bitsRedeNoOcteto === 1 ? "bit" : "bits"} de rede no ${ordinal(k + 1)} octeto. É nele que a conta acontece.`;
+  passos.push(texto);
+
+  // 2. Número mágico e máscara
+  passos.push(`Ache o número mágico (o tamanho do bloco). No ${ordinal(k + 1)} octeto ficam ${8 - bitsRedeNoOcteto} bits de host: 2^${8 - bitsRedeNoOcteto} = ${bloco}. A máscara nesse octeto é 256 − ${bloco} = ${256 - bloco}, então a máscara inteira é ${r.masc}.`);
+
+  // 3. Em que bloco o IP cai
+  const blocos = [];
+  if (256 / bloco <= 8) {
+    for (let b = 0; b < 256; b += bloco) blocos.push(b);
+  } else {
+    if (inicio - bloco >= 0) blocos.push("…", inicio - bloco);
+    blocos.push(inicio);
+    if (inicio + bloco < 256) blocos.push(inicio + bloco, "…");
+  }
+  passos.push(`Conte de ${bloco} em ${bloco} no ${ordinal(k + 1)} octeto: ${blocos.join(", ")}. O IP tem ${valor} nesse octeto, então cai no bloco que começa em ${inicio} (${inicio} ≤ ${valor} ≤ ${fim}). Conta rápida: ${valor} ÷ ${bloco} dá ${Math.floor(valor / bloco)} inteiro; ${Math.floor(valor / bloco)} × ${bloco} = ${inicio}.`);
+
+  // 4. Rede e broadcast
+  const depois = k < 3 ? ` Nos octetos depois dele, use 0.` : "";
+  passos.push(`Endereço de rede: copie os octetos antes do interessante, use ${inicio} no interessante.${depois} Rede: ${r.rede}.`);
+  const depoisBroad = k < 3 ? ` Nos octetos depois dele, use 255.` : "";
+  passos.push(`Broadcast: o próximo bloco começaria em ${inicio + bloco}; o broadcast é um antes: ${fim}.${depoisBroad} Broadcast: ${r.broad}.`);
+
+  // 5. Hosts
+  passos.push(`Primeiro host = rede + 1: ${r.prim}. Último host = broadcast − 1: ${r.ult}.`);
+  passos.push(`Quantos hosts: 32 − ${prefixo} = ${bitsHost} bits de host. 2^${bitsHost} − 2 = ${r.hosts} (tira a rede e o broadcast).`);
+
+  return passos;
+}
+
+// Mostra uma lista de passos numerados dentro de um <ol>
+function mostrarPassos(lista, passos) {
+  lista.innerHTML = "";
+  passos.forEach((passo) => lista.appendChild(criar("li", "", passo)));
+  lista.hidden = false;
+}
+
+// Deixa a resposta do aluno no formato da resposta certa:
+// tira espaços, aceita "/26" ou "26" e "1.022" ou "1022"
+function normalizar(valor, tipo) {
+  let texto = valor.trim().replace(/\s+/g, "");
+  if (tipo === "prefixo") texto = texto.replace(/^\//, "");
+  if (tipo === "numero") texto = texto.replace(/\./g, "");
+  if (tipo === "binario") {
+    if (!/^[01]{1,8}$/.test(texto)) return texto;
+    return paraBinario(parseInt(texto, 2));
+  }
+  return texto;
+}
+
+
+/* 9. Treino livre de sub-redes --------------------------------- */
+
+(function treinoLivre() {
   // id do campo -> propriedade da resposta
   const CAMPOS = {
     sRede: "rede",
@@ -822,6 +946,7 @@ botaoCompartilhar.addEventListener("click", async () => {
   };
 
   const retorno = $("#sRetorno");
+  const listaPassos = $("#sPassos");
   let atual;
   let acertos = 0;
   let tentativas = 0;
@@ -834,21 +959,7 @@ botaoCompartilhar.addEventListener("click", async () => {
   const novoDesafio = () => {
     const prefixo = sorteio(20, 30);
     const ip = [sorteio(10, 189), sorteio(0, 255), sorteio(0, 255), sorteio(1, 254)].join(".");
-
-    const tamanho = 2 ** (32 - prefixo);  // endereços no bloco
-    const n = ipParaNumero(ip);
-    const rede = n - (n % tamanho);       // múltiplo do bloco logo abaixo do IP
-
-    atual = {
-      ip,
-      prefixo,
-      rede: numeroParaIp(rede),
-      broad: numeroParaIp(rede + tamanho - 1),
-      prim: numeroParaIp(rede + 1),
-      ult: numeroParaIp(rede + tamanho - 2),
-      hosts: String(tamanho - 2),
-      masc: numeroParaIp(2 ** 32 - tamanho),
-    };
+    atual = calcularSubRede(ip, prefixo);
 
     $("#ipDesafio").textContent = ip + " /" + prefixo;
     Object.keys(CAMPOS).forEach((idCampo) => {
@@ -856,6 +967,7 @@ botaoCompartilhar.addEventListener("click", async () => {
       campo.value = "";
       campo.className = "";
     });
+    listaPassos.hidden = true;
     mensagem("");
   };
 
@@ -864,7 +976,8 @@ botaoCompartilhar.addEventListener("click", async () => {
 
     Object.entries(CAMPOS).forEach(([idCampo, chave]) => {
       const campo = $("#" + idCampo);
-      const certo = campo.value.trim() === atual[chave];
+      const tipo = chave === "hosts" ? "numero" : "ip";
+      const certo = normalizar(campo.value, tipo) === atual[chave];
       campo.className = certo ? "certo" : "errado";
       if (certo) corretos++;
     });
@@ -876,7 +989,7 @@ botaoCompartilhar.addEventListener("click", async () => {
       mensagem("Tudo certo! Sub-rede dominada.", "ok");
     } else {
       mensagem(
-        `${corretos} de 6 corretos. Dica: o bloco de um /${atual.prefixo} tem ${2 ** (32 - atual.prefixo)} endereços; ache o múltiplo do bloco logo abaixo do IP.`,
+        `${corretos} de 6 corretos. Dica: o bloco de um /${atual.prefixo} tem ${2 ** (32 - atual.prefixo)} endereços; ache o múltiplo do bloco logo abaixo do IP. Se travar, veja o passo a passo.`,
         "no"
       );
     }
@@ -886,14 +999,551 @@ botaoCompartilhar.addEventListener("click", async () => {
 
   $("#sNovo").addEventListener("click", novoDesafio);
 
+  $("#sPassoAPasso").addEventListener("click", () => {
+    mostrarPassos(listaPassos, passosSubRede(atual.ip, atual.prefixo));
+  });
+
   $("#sMostrar").addEventListener("click", () => {
     Object.entries(CAMPOS).forEach(([idCampo, chave]) => {
       const campo = $("#" + idCampo);
       campo.value = atual[chave];
       campo.className = "";
     });
-    mensagem("Confira cada campo e tente um novo endereço.");
+    mensagem("Confira cada campo com o passo a passo e tente um novo endereço.");
+    mostrarPassos(listaPassos, passosSubRede(atual.ip, atual.prefixo));
   });
 
   novoDesafio();
+})();
+
+
+/* 10. Maratona de sub-redes ------------------------------------ */
+/* Cinco fases, do binário ao VLSM. Cada campo certo vale 10 XP (5 XP se o
+   passo a passo foi aberto antes de responder). Três questões certas
+   seguidas dão bônus de combo. A medalha da fase sai da porcentagem de
+   campos certos. O melhor resultado de cada fase fica salvo no navegador. */
+
+(function maratona() {
+  const XP_CAMPO = 10;
+  const XP_CAMPO_COM_AJUDA = 5;
+  const XP_COMBO = 10;
+  const CHAVE = "ccna-maratona";
+
+  // Questão de uma resposta só: { enunciado, dado, campos: [{ rotulo, resposta, tipo }], passos }
+
+  // Fase 1: binário <-> decimal
+  function questaoBinario(i) {
+    const valores = [128, 192, 224, 240, 248, 252, 254, 255];
+    const valor = i % 2 === 0 ? umDe(valores) : sorteio(1, 254);
+    const bits = paraBinario(valor);
+    const pesos = [128, 64, 32, 16, 8, 4, 2, 1];
+    const usados = pesos.filter((_, p) => bits[p] === "1");
+
+    if (i % 2 === 0) {
+      return {
+        enunciado: "Converta este octeto de binário para decimal.",
+        dado: bits,
+        campos: [{ rotulo: "Decimal", resposta: String(valor), tipo: "numero" }],
+        passos: [
+          "Escreva os pesos de cada bit, da esquerda para a direita: 128 64 32 16 8 4 2 1.",
+          `Embaixo, os bits: ${bits.split("").join(" ")}.`,
+          `Some só os pesos que têm 1 embaixo: ${usados.join(" + ")} = ${valor}.`,
+        ],
+      };
+    }
+
+    // decimal -> binário: tira o maior peso que cabe, do 128 até o 1
+    const passos = ["Use os pesos 128 64 32 16 8 4 2 1. Para cada peso, pergunte: cabe no que sobrou?"];
+    let sobra = valor;
+    pesos.forEach((peso) => {
+      if (peso <= sobra) {
+        passos.push(`${peso} cabe em ${sobra}? Sim: bit 1. Sobra ${sobra} − ${peso} = ${sobra - peso}.`);
+        sobra -= peso;
+      } else {
+        passos.push(`${peso} cabe em ${sobra}? Não: bit 0.`);
+      }
+    });
+    passos.push(`Juntando os bits na ordem: ${bits}.`);
+
+    return {
+      enunciado: "Converta este octeto de decimal para binário (8 bits).",
+      dado: String(valor),
+      campos: [{ rotulo: "Binário (8 bits)", resposta: bits, tipo: "binario" }],
+      passos,
+    };
+  }
+
+  // Fase 2: prefixo, máscara, hosts e bloco (um tipo de pergunta por questão)
+  function questaoMascara(i) {
+    const prefixoQuebrado = () => umDe([17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30]);
+
+    // Os 8 bits do octeto interessante e quantos são 1
+    const explicarMascara = (prefixo) => {
+      const cheios = Math.floor(prefixo / 8);
+      const resto = prefixo % 8;
+      const octeto = 256 - 2 ** (8 - resto);
+      return `${cheios} octetos cheios (${cheios * 8} bits) valem 255. Sobram ${resto} bits 1 no ${ordinal(cheios + 1)} octeto: ${paraBinario(octeto)} = ${octeto}. O resto é 0.`;
+    };
+
+    const tipos = [
+      () => {
+        const p = prefixoQuebrado();
+        return {
+          enunciado: "Qual é a máscara decimal deste prefixo?",
+          dado: "/" + p,
+          campos: [{ rotulo: "Máscara decimal", resposta: prefixoParaMascara(p), tipo: "ip" }],
+          passos: [
+            `/${p} quer dizer ${p} bits 1 seguidos, da esquerda para a direita.`,
+            explicarMascara(p),
+            `Máscara: ${prefixoParaMascara(p)}.`,
+          ],
+        };
+      },
+      () => {
+        const p = prefixoQuebrado();
+        const mascara = prefixoParaMascara(p);
+        const contas = mascara.split(".").map((o) => {
+          const uns = paraBinario(Number(o)).split("").filter((b) => b === "1").length;
+          return `${o} = ${paraBinario(Number(o))} (${uns} bits 1)`;
+        });
+        return {
+          enunciado: "Qual é o prefixo (barra) desta máscara?",
+          dado: mascara,
+          campos: [{ rotulo: "Prefixo (ex.: /24)", resposta: String(p), tipo: "prefixo" }],
+          passos: [
+            "Conte os bits 1 de cada octeto.",
+            contas.join("; ") + ".",
+            `Somando: /${p}.`,
+          ],
+        };
+      },
+      () => {
+        const p = sorteio(20, 30);
+        const h = 32 - p;
+        return {
+          enunciado: "Quantos hosts válidos cabem numa sub-rede com este prefixo?",
+          dado: "/" + p,
+          campos: [{ rotulo: "Hosts válidos", resposta: String(2 ** h - 2), tipo: "numero" }],
+          passos: [
+            `Bits de host = 32 − ${p} = ${h}.`,
+            `Endereços no bloco = 2^${h} = ${2 ** h}.`,
+            `Hosts válidos = ${2 ** h} − 2 = ${2 ** h - 2} (um endereço é da rede e outro é o broadcast).`,
+          ],
+        };
+      },
+      () => {
+        const precisa = sorteio(3, 500);
+        let h = 2;
+        while (2 ** h - 2 < precisa) h++;
+        const passos = [`Procure o menor número de bits de host (h) em que 2^h − 2 é pelo menos ${precisa}.`];
+        for (let t = Math.max(2, h - 2); t <= h; t++) {
+          passos.push(`h = ${t}: 2^${t} − 2 = ${2 ** t - 2} ${2 ** t - 2 >= precisa ? "→ cabe!" : "→ não cabe."}`);
+        }
+        passos.push(`Prefixo = 32 − ${h} = /${32 - h}.`);
+        return {
+          enunciado: `Uma LAN precisa de ${precisa} hosts. Qual é o maior prefixo (a menor sub-rede) que atende?`,
+          dado: precisa + " hosts",
+          campos: [{ rotulo: "Prefixo (ex.: /24)", resposta: String(32 - h), tipo: "prefixo" }],
+          passos,
+        };
+      },
+      () => {
+        const p = prefixoQuebrado();
+        const bloco = 2 ** (8 - (p % 8));
+        const k = Math.floor(p / 8);
+        return {
+          enunciado: "Qual é o número mágico (o tamanho do bloco no octeto interessante)?",
+          dado: "/" + p,
+          campos: [{ rotulo: "Número mágico", resposta: String(bloco), tipo: "numero" }],
+          passos: [
+            `/${p}: ${k} octetos cheios e ${p % 8} bits de rede no ${ordinal(k + 1)} octeto (o interessante).`,
+            `Bits de host nesse octeto: 8 − ${p % 8} = ${8 - (p % 8)}. Bloco = 2^${8 - (p % 8)} = ${bloco}.`,
+            `Outro jeito: a máscara nesse octeto é ${256 - bloco}; 256 − ${256 - bloco} = ${bloco}.`,
+          ],
+        };
+      },
+    ];
+
+    return tipos[i % tipos.length]();
+  }
+
+  // Fases 3 e 4: a sub-rede de um IP
+  function questaoSubRede(prefixos) {
+    return () => {
+      const prefixo = umDe(prefixos);
+      const ip = ipPrivado();
+      const r = calcularSubRede(ip, prefixo);
+      return {
+        enunciado: "Ache a sub-rede deste host.",
+        dado: ip + " /" + prefixo,
+        campos: [
+          { rotulo: "Endereço de rede", resposta: r.rede, tipo: "ip" },
+          { rotulo: "Primeiro host", resposta: r.prim, tipo: "ip" },
+          { rotulo: "Último host", resposta: r.ult, tipo: "ip" },
+          { rotulo: "Broadcast", resposta: r.broad, tipo: "ip" },
+        ],
+        passos: passosSubRede(ip, prefixo),
+      };
+    };
+  }
+
+  // Fase 5: VLSM. Três LANs e um link entre roteadores, fora de ordem.
+  function questaoVlsm() {
+    const terceiro = sorteio(1, 254);
+    const base = `192.168.${terceiro}.0`;
+    const nomes = embaralhar(["Vendas", "Financeiro", "Laboratório", "Recepção", "Wi-Fi visitantes", "Diretoria", "Suporte", "Câmeras"]);
+
+    // faixas de hosts escolhidas para que cada rede tenha um prefixo diferente
+    const redes = [
+      { nome: "LAN " + nomes[0], hosts: sorteio(33, 120) },
+      { nome: "LAN " + nomes[1], hosts: sorteio(15, 30) },
+      { nome: "LAN " + nomes[2], hosts: sorteio(3, 14) },
+      { nome: "Link R1–R2", hosts: 2 },
+    ];
+
+    // menor bloco que atende cada rede
+    redes.forEach((rede) => {
+      let h = 2;
+      while (2 ** h - 2 < rede.hosts) h++;
+      rede.bloco = 2 ** h;
+      rede.prefixo = 32 - h;
+    });
+
+    // Alocação: da maior para a menor, a partir do .0
+    const passos = [`Ordene da maior para a menor: ${redes.map((r) => `${r.nome} (${r.hosts})`).join(", ")}. Começar pela maior evita sobreposição e buracos.`];
+    let inicio = 0;
+    redes.forEach((rede) => {
+      rede.rede = `192.168.${terceiro}.${inicio}`;
+      const h = 32 - rede.prefixo;
+      passos.push(`${rede.nome}: ${rede.hosts} hosts → 2^${h} − 2 = ${rede.bloco - 2} cabe → /${rede.prefixo} (bloco de ${rede.bloco}). Começa em .${inicio} e vai até .${inicio + rede.bloco - 1}. A próxima começa em .${inicio + rede.bloco}.`);
+      inicio += rede.bloco;
+    });
+
+    // Os campos aparecem fora de ordem: escolher a ordem faz parte do desafio
+    const campos = [];
+    embaralhar(redes).forEach((rede) => {
+      campos.push({ rotulo: `${rede.nome} (${rede.hosts} hosts): prefixo`, resposta: String(rede.prefixo), tipo: "prefixo" });
+      campos.push({ rotulo: `${rede.nome}: endereço de rede`, resposta: rede.rede, tipo: "ip" });
+    });
+
+    return {
+      enunciado: `Divida a rede ${base}/24 com VLSM. Comece pela maior rede, a partir do ${base}, sem deixar buracos.`,
+      dado: base + " /24",
+      campos,
+      passos,
+    };
+  }
+
+  const FASES = [
+    { nome: "Aquecimento binário", desc: "Converta octetos entre binário e decimal.", qtd: 6, metaSeg: 120, gerar: questaoBinario, insignia: "Binário fluente" },
+    { nome: "Máscaras e prefixos", desc: "Prefixo, máscara, hosts e número mágico.", qtd: 5, metaSeg: 180, gerar: questaoMascara, insignia: "Mestre das máscaras" },
+    { nome: "Rede e broadcast", desc: "Sub-redes no 4º octeto (/25 a /30).", qtd: 4, metaSeg: 300, gerar: questaoSubRede([25, 26, 27, 28, 29, 30]), insignia: "Caçador de broadcast" },
+    { nome: "Terceiro octeto", desc: "Sub-redes maiores (/17 a /23).", qtd: 4, metaSeg: 360, gerar: questaoSubRede([17, 18, 19, 20, 21, 22, 23]), insignia: "Desbravador do 3º octeto" },
+    { nome: "Chefão VLSM", desc: "Divida uma /24 entre LANs de tamanhos diferentes.", qtd: 2, metaSeg: 480, gerar: questaoVlsm, insignia: "Arquiteto VLSM" },
+  ];
+
+  const MEDALHAS = [
+    { nome: "ouro", minimo: 90 },
+    { nome: "prata", minimo: 70 },
+    { nome: "bronze", minimo: 50 },
+  ];
+
+  // Estado da fase em andamento
+  const jogo = {
+    fase: 0,          // índice em FASES
+    questoes: [],
+    i: 0,
+    xp: 0,
+    camposCertos: 0,
+    camposTotal: 0,
+    seguidas: 0,      // questões inteiras certas em sequência (combo)
+    ajudas: 0,        // quantas vezes abriu o passo a passo antes de responder
+    ajudaAberta: false,
+    inicio: 0,
+    relogio: null,
+    texto: "",        // resultado pronto para colar no chat
+  };
+
+  const telaFases = $("#marFases");
+  const telaJogo = $("#marJogo");
+  const telaResultado = $("#marResultado");
+  const caixaCampos = $("#marCampos");
+  const retorno = $("#marRetorno");
+  const listaPassos = $("#marPassos");
+  const botaoConfirmar = $("#marConfirmar");
+  const botaoProxima = $("#marProxima");
+  const botaoAjuda = $("#marAjuda");
+
+  // Melhores resultados salvos neste navegador
+  function lerRecordes() {
+    try {
+      return JSON.parse(localStorage.getItem(CHAVE)) || { fases: {}, insignias: [] };
+    } catch (erro) {
+      return { fases: {}, insignias: [] };
+    }
+  }
+
+  function salvarRecordes(recordes) {
+    try {
+      localStorage.setItem(CHAVE, JSON.stringify(recordes));
+    } catch (erro) {}
+  }
+
+  // Cartões das fases, com a melhor medalha de cada uma
+  function montarFases() {
+    const recordes = lerRecordes();
+    telaFases.innerHTML = "";
+
+    FASES.forEach((fase, f) => {
+      const recorde = recordes.fases[f];
+      const botao = criar("button", "mar-fase");
+      botao.type = "button";
+      botao.append(
+        criar("span", "mar-fase-num", "Fase " + (f + 1)),
+        criar("strong", "", fase.nome),
+        criar("span", "", fase.desc),
+        criar("span", "mar-fase-recorde " + (recorde ? recorde.medalha : ""),
+          recorde ? `Melhor: ${recorde.xp} XP · ${recorde.medalha === "sem" ? "sem medalha" : "medalha de " + recorde.medalha}` : "Ainda não jogada"),
+      );
+      botao.addEventListener("click", () => comecarFase(f));
+      telaFases.appendChild(botao);
+    });
+
+    const xpTotal = Object.values(recordes.fases).reduce((soma, r) => soma + r.xp, 0);
+    const insignias = recordes.insignias.length ? recordes.insignias.join(" · ") : "nenhuma ainda";
+    $("#marTotal").textContent = `Seu XP na maratona (soma dos recordes): ${xpTotal} · Insígnias: ${insignias}`;
+  }
+
+  function comecarFase(f) {
+    const fase = FASES[f];
+    jogo.fase = f;
+    jogo.questoes = indices(fase.qtd).map((i) => fase.gerar(i));
+    jogo.i = 0;
+    jogo.xp = 0;
+    jogo.camposCertos = 0;
+    jogo.camposTotal = 0;
+    jogo.seguidas = 0;
+    jogo.ajudas = 0;
+    jogo.inicio = Date.now();
+
+    telaFases.hidden = true;
+    $("#marTotal").hidden = true;
+    telaResultado.hidden = true;
+    telaJogo.hidden = false;
+    $("#marNomeFase").textContent = `Fase ${f + 1} · ${fase.nome}`;
+
+    clearInterval(jogo.relogio);
+    const tick = () => {
+      $("#marTempo").textContent = "Tempo: " + formatarTempo(Math.round((Date.now() - jogo.inicio) / 1000));
+    };
+    tick();
+    jogo.relogio = setInterval(tick, 1000);
+
+    mostrarQuestao();
+  }
+
+  function mostrarQuestao() {
+    const q = jogo.questoes[jogo.i];
+    const total = jogo.questoes.length;
+
+    $("#marPos").textContent = `Questão ${jogo.i + 1} de ${total}`;
+    $("#marXp").textContent = `${jogo.xp} XP`;
+    $("#marProgresso").style.width = (jogo.i / total) * 100 + "%";
+    $("#marEnunciado").textContent = q.enunciado;
+    $("#marDado").textContent = q.dado;
+
+    caixaCampos.innerHTML = "";
+    q.campos.forEach((campo, c) => {
+      const rotulo = criar("label", "", campo.rotulo);
+      const input = criar("input");
+      input.autocomplete = "off";
+      input.inputMode = campo.tipo === "ip" ? "decimal" : "numeric";
+      input.dataset.campo = c;
+      rotulo.appendChild(input);
+      caixaCampos.appendChild(rotulo);
+    });
+
+    jogo.ajudaAberta = false;
+    listaPassos.hidden = true;
+    retorno.textContent = "";
+    retorno.className = "retorno";
+    botaoConfirmar.hidden = false;
+    botaoProxima.hidden = true;
+    botaoAjuda.hidden = false;
+
+    const primeiro = caixaCampos.querySelector("input");
+    if (primeiro) primeiro.focus({ preventScroll: true });
+    telaJogo.scrollIntoView({ block: "start" });
+  }
+
+  // Abrir a ajuda antes de responder: a questão passa a valer metade
+  botaoAjuda.addEventListener("click", () => {
+    const q = jogo.questoes[jogo.i];
+    if (!jogo.ajudaAberta) jogo.ajudas++;
+    jogo.ajudaAberta = true;
+    mostrarPassos(listaPassos, q.passos);
+    retorno.textContent = "Passo a passo aberto: esta questão vale metade do XP. Siga os passos e responda.";
+    retorno.className = "retorno";
+  });
+
+  $("#marForm").addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const q = jogo.questoes[jogo.i];
+    const inputs = [...caixaCampos.querySelectorAll("input")];
+
+    if (inputs.some((input) => input.value.trim() === "")) {
+      retorno.textContent = "Preencha todos os campos. Se travar, abra o passo a passo.";
+      retorno.className = "retorno no";
+      return;
+    }
+
+    let certos = 0;
+    inputs.forEach((input) => {
+      const campo = q.campos[Number(input.dataset.campo)];
+      const certo = normalizar(input.value, campo.tipo) === campo.resposta;
+      input.className = certo ? "certo" : "errado";
+      input.disabled = true;
+      if (certo) {
+        certos++;
+      } else {
+        const certa = campo.tipo === "prefixo" ? "/" + campo.resposta : campo.resposta;
+        input.parentElement.appendChild(criar("small", "mar-certa", "Certo: " + certa));
+      }
+    });
+
+    const valor = jogo.ajudaAberta ? XP_CAMPO_COM_AJUDA : XP_CAMPO;
+    let ganho = certos * valor;
+    let texto;
+
+    if (certos === inputs.length) {
+      jogo.seguidas++;
+      texto = `Correto! +${ganho} XP.`;
+      if (jogo.seguidas >= 3) {
+        ganho += XP_COMBO;
+        texto = `Correto! Combo de ${jogo.seguidas} seguidas: +${ganho} XP.`;
+      }
+      retorno.className = "retorno ok";
+    } else {
+      jogo.seguidas = 0;
+      texto = `${certos} de ${inputs.length} campos certos: +${ganho} XP. Leia o passo a passo abaixo para ver onde a conta mudou.`;
+      retorno.className = "retorno no";
+      mostrarPassos(listaPassos, q.passos);
+    }
+
+    jogo.xp += ganho;
+    jogo.camposCertos += certos;
+    jogo.camposTotal += inputs.length;
+    retorno.textContent = texto;
+    $("#marXp").textContent = `${jogo.xp} XP`;
+
+    botaoConfirmar.hidden = true;
+    botaoAjuda.hidden = true;
+    botaoProxima.hidden = false;
+    botaoProxima.textContent = jogo.i < jogo.questoes.length - 1 ? "Próxima questão" : "Ver o resultado da fase";
+    botaoProxima.focus();
+  });
+
+  botaoProxima.addEventListener("click", () => {
+    jogo.i++;
+    if (jogo.i < jogo.questoes.length) mostrarQuestao();
+    else terminarFase();
+  });
+
+  $("#marSair").addEventListener("click", () => {
+    clearInterval(jogo.relogio);
+    voltarParaFases();
+  });
+
+  function voltarParaFases() {
+    telaJogo.hidden = true;
+    telaResultado.hidden = true;
+    telaFases.hidden = false;
+    $("#marTotal").hidden = false;
+    montarFases();
+    telaFases.scrollIntoView({ block: "start" });
+  }
+
+  function terminarFase() {
+    clearInterval(jogo.relogio);
+    const fase = FASES[jogo.fase];
+    const segundos = Math.round((Date.now() - jogo.inicio) / 1000);
+    const pct = Math.round((jogo.camposCertos / jogo.camposTotal) * 100);
+    const medalha = MEDALHAS.find((m) => pct >= m.minimo);
+    const nomeMedalha = medalha ? medalha.nome : "sem";
+
+    // Insígnias novas desta rodada
+    const recordes = lerRecordes();
+    const novas = [];
+    const ganhar = (insignia) => {
+      if (!recordes.insignias.includes(insignia)) {
+        recordes.insignias.push(insignia);
+        novas.push(insignia);
+      }
+    };
+    ganhar("Primeira largada");
+    if (nomeMedalha === "ouro") ganhar(fase.insignia);
+    if (nomeMedalha === "ouro" && jogo.ajudas === 0) ganhar("Sem colinha");
+    if (pct >= 70 && segundos <= fase.metaSeg) ganhar("Relâmpago");
+    if (FASES.every((_, f) => (f === jogo.fase ? nomeMedalha : recordes.fases[f] && recordes.fases[f].medalha) === "ouro")) {
+      ganhar("Lenda das sub-redes");
+    }
+
+    // Guarda o recorde da fase (o maior XP)
+    const anterior = recordes.fases[jogo.fase];
+    const recorde = !anterior || jogo.xp > anterior.xp;
+    if (recorde) recordes.fases[jogo.fase] = { xp: jogo.xp, medalha: nomeMedalha };
+    salvarRecordes(recordes);
+
+    // Tela de resultado
+    telaJogo.hidden = true;
+    telaResultado.hidden = false;
+
+    const medalhaTexto = medalha ? `Medalha de ${medalha.nome}` : "Sem medalha desta vez";
+    const caixaMedalha = $("#marMedalha");
+    caixaMedalha.textContent = medalhaTexto;
+    caixaMedalha.className = "mar-medalha " + nomeMedalha;
+
+    $("#marNota").textContent = `Fase ${jogo.fase + 1} · ${fase.nome}: ${jogo.xp} XP`;
+
+    let mensagem = `Você acertou ${jogo.camposCertos} de ${jogo.camposTotal} campos (${pct}%) em ${formatarTempo(segundos)}.`;
+    if (recorde && anterior) mensagem += " Novo recorde nesta fase!";
+    if (nomeMedalha === "ouro") mensagem += jogo.fase < FASES.length - 1 ? " Pode ir para a próxima fase." : " Você venceu o chefão!";
+    else if (nomeMedalha === "sem") mensagem += " Jogue de novo abrindo o passo a passo: ele ensina a conta com os números da questão.";
+    else mensagem += " Jogue de novo para buscar o ouro.";
+    $("#marMensagem").textContent = mensagem;
+
+    $("#marInsignias").textContent = novas.length ? "Insígnias novas: " + novas.join(" · ") : "";
+
+    // Texto para colar no chat do Teams
+    let nome = "";
+    try {
+      nome = localStorage.getItem("ccna-nome") || "";
+    } catch (erro) {}
+    jogo.texto = [
+      nome,
+      `Maratona de sub-redes · Fase ${jogo.fase + 1} (${fase.nome})`,
+      `${jogo.camposCertos} de ${jogo.camposTotal} campos · ${jogo.xp} XP · ${medalhaTexto.toLowerCase()} · ${formatarTempo(segundos)}`,
+    ].filter(Boolean).join(" · ");
+    $("#marCopiado").textContent = "";
+
+    $("#marProximaFase").hidden = jogo.fase === FASES.length - 1;
+    telaResultado.scrollIntoView({ block: "start" });
+  }
+
+  $("#marCopiar").addEventListener("click", async () => {
+    const aviso = $("#marCopiado");
+    try {
+      await navigator.clipboard.writeText(jogo.texto);
+      aviso.textContent = "Copiado! Cole no chat do Teams: " + jogo.texto;
+    } catch (erro) {
+      // Sem acesso à área de transferência: mostra o texto para copiar à mão
+      aviso.textContent = "Copie este texto e cole no chat do Teams: " + jogo.texto;
+    }
+  });
+
+  $("#marRepetir").addEventListener("click", () => comecarFase(jogo.fase));
+  $("#marProximaFase").addEventListener("click", () => comecarFase(jogo.fase + 1));
+  $("#marVoltar").addEventListener("click", voltarParaFases);
+
+  montarFases();
 })();

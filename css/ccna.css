@@ -20,6 +20,7 @@
    13. Página de treinos (simulado)
    14. Rodapé
    15. Telas pequenas
+   (depois: Conta, Painel da professora, 16. Maratona de sub-redes e 17. Trilha de revisão do ITN)
    ============================================================== */
 
 
@@ -1406,4 +1407,690 @@ footer {
   display: block;
   font: 400 .78rem var(--f-mono);
   color: var(--suave);
+}
+
+
+/* 16. Maratona de sub-redes (treinos.html) ---------------------- */
+
+.mar-cola {
+  margin-bottom: 1.2rem;
+}
+
+.mar-cola summary {
+  cursor: pointer;
+  font: 700 1rem var(--f-titulo);
+  color: var(--itn);
+}
+
+.mar-tabelas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  margin-top: 1rem;
+}
+
+.mar-tabelas table {
+  border-collapse: collapse;
+  font: 400 .9rem var(--f-mono);
+}
+
+.mar-tabelas caption {
+  text-align: left;
+  font: 600 .88rem var(--f-titulo);
+  color: var(--suave);
+  padding-bottom: .4rem;
+}
+
+.mar-tabelas th,
+.mar-tabelas td {
+  border: 1px solid var(--linha);
+  padding: .3rem .5rem;
+  text-align: center;
+}
+
+.mar-tabelas th {
+  color: var(--itn);
+}
+
+/* Cartões das fases */
+.mar-fases {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: .8rem;
+}
+
+.mar-fase {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  text-align: left;
+  padding: 1rem;
+  font: 400 .92rem var(--f-texto);
+  color: var(--tinta);
+  background: var(--painel);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-p);
+  cursor: pointer;
+}
+
+.mar-fase:hover,
+.mar-fase:focus-visible {
+  border-color: var(--itn);
+  box-shadow: 0 0 14px -6px var(--itn);
+}
+
+.mar-fase strong {
+  font: 700 1.05rem var(--f-titulo);
+}
+
+.mar-fase-num {
+  font: 400 .8rem var(--f-mono);
+  color: var(--itn);
+}
+
+.mar-fase-recorde {
+  margin-top: auto;
+  padding-top: .4rem;
+  font: 400 .8rem var(--f-mono);
+  color: var(--suave);
+}
+
+.mar-fase-recorde.ouro,
+.mar-medalha.ouro {
+  color: var(--srwe);
+}
+
+.mar-fase-recorde.prata,
+.mar-medalha.prata {
+  color: #b9c4cf;
+}
+
+.mar-fase-recorde.bronze,
+.mar-medalha.bronze {
+  color: #d6915a;
+}
+
+[data-tema="claro"] .mar-fase-recorde.prata,
+[data-tema="claro"] .mar-medalha.prata {
+  color: #5d6b78;
+}
+
+[data-tema="claro"] .mar-fase-recorde.bronze,
+[data-tema="claro"] .mar-medalha.bronze {
+  color: #9a5520;
+}
+
+.mar-jogo .campos small {
+  color: var(--ok);
+  font: 400 .85rem var(--f-mono);
+}
+
+.mar-medalha {
+  font: 700 1.6rem var(--f-titulo);
+  margin: 0 0 .4rem;
+  color: var(--suave);
+}
+
+.mar-copiado {
+  overflow-wrap: anywhere;
+}
+
+/* Passo a passo da conta (maratona e treino livre) */
+.passos-conta {
+  margin: 1rem 0 0;
+  padding: .9rem 1rem .9rem 2.2rem;
+  background: var(--noite);
+  border-left: 3px solid var(--itn);
+  display: grid;
+  gap: .45rem;
+  overflow-wrap: anywhere;
+}
+
+
+/* 17. Trilha de revisão do ITN (revisao-itn.html) --------------- */
+
+.rev-painel {
+  margin-bottom: 1.2rem;
+}
+
+.rev-painel p {
+  margin: .2rem 0;
+}
+
+.rev-painel-topo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: .6rem 1.5rem;
+}
+
+.rev-nivel {
+  font: 700 1.6rem var(--f-titulo);
+  color: var(--ok);
+}
+
+.rev-painel-numeros {
+  text-align: right;
+}
+
+.rev-total {
+  font: 500 1.2rem var(--f-mono);
+  color: var(--srwe);
+}
+
+/* Mapa das estações */
+.rev-mapa {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: .5rem;
+  margin-bottom: 1.4rem;
+}
+
+.rev-ponto {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 .6rem;
+  align-items: center;
+  padding: .55rem .7rem;
+  text-decoration: none;
+  color: var(--tinta);
+  background: var(--painel);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-p);
+}
+
+.rev-ponto:hover,
+.rev-ponto:focus-visible {
+  border-color: var(--itn);
+}
+
+.rev-ponto-num {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  font: 700 .95rem var(--f-titulo);
+  color: var(--itn);
+  border: 1px solid var(--itn);
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background: var(--noite);
+}
+
+.rev-ponto.feita .rev-ponto-num {
+  background: var(--itn);
+  color: var(--noite);
+}
+
+.rev-ponto-nome {
+  font-size: .9rem;
+  line-height: 1.2;
+}
+
+.rev-ponto-estrelas,
+.rev-estrelas {
+  color: var(--srwe);
+  letter-spacing: .1em;
+  font-size: .85rem;
+}
+
+/* Estações */
+.rev-trilha {
+  display: grid;
+  gap: .8rem;
+  margin-bottom: 1.6rem;
+}
+
+.rev-estacao {
+  padding: 0;
+  scroll-margin-top: 5rem;
+}
+
+.rev-estacao > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem .8rem;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.rev-estacao > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rev-estacao > summary h3 {
+  flex: 1;
+  min-width: 12ch;
+}
+
+.rev-estacao .tag {
+  --c: var(--itn);
+}
+
+.rev-num {
+  font: 400 .9rem var(--f-mono);
+  color: var(--itn);
+}
+
+.rev-num::before {
+  content: "Estação ";
+}
+
+.rev-xp {
+  font: 400 .8rem var(--f-mono);
+  color: var(--suave);
+}
+
+.rev-estacao.feita {
+  box-shadow: inset 0 0 0 1px var(--itn);
+}
+
+.rev-corpo {
+  padding: 0 1.2rem 1.2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.rev-essencial ul {
+  margin: .4rem 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: .35rem;
+}
+
+.rev-essencial h4,
+.rev-jogo h4 {
+  margin: 0;
+  font: 700 1rem var(--f-titulo);
+}
+
+.rev-lembrar {
+  padding: .7rem .9rem;
+  background: var(--noite);
+  border-left: 3px solid var(--srwe);
+}
+
+.rev-lembrar strong {
+  color: var(--srwe);
+}
+
+/* Cartão de cada minijogo */
+.rev-jogo {
+  padding: 1rem;
+  background: var(--noite);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-p);
+  min-width: 0;
+}
+
+.rev-jogo-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .3rem .7rem;
+}
+
+.rev-tipo {
+  font: 700 .75rem var(--f-titulo);
+  padding: .1rem .5rem;
+  color: var(--noite);
+  background: var(--itn);
+}
+
+.rev-recorde {
+  margin-left: auto;
+  font: 400 .8rem var(--f-mono);
+  color: var(--srwe);
+}
+
+.rev-instrucao {
+  color: var(--suave);
+  margin: .4rem 0 .8rem;
+}
+
+.rev-contador {
+  font: 400 .85rem var(--f-mono);
+  color: var(--suave);
+  margin: 0 0 .4rem;
+}
+
+.rev-pergunta {
+  font-weight: 600;
+  margin: 0 0 .7rem;
+}
+
+.rev-item,
+.rev-dado {
+  font: 500 1.3rem var(--f-mono);
+  color: var(--itn);
+  margin: .2rem 0 .8rem;
+  overflow-wrap: anywhere;
+}
+
+/* Botões dos minijogos */
+.rev-jogo button {
+  font: 600 .95rem var(--f-texto);
+  padding: .55rem .85rem;
+  cursor: pointer;
+  color: var(--tinta);
+  background: var(--painel);
+  border: 1px solid var(--linha);
+  border-radius: 8px;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.rev-jogo button:hover:not(:disabled) {
+  border-color: var(--itn);
+}
+
+.rev-jogo button:disabled {
+  cursor: default;
+}
+
+.rev-jogo .rev-final button,
+.rev-jogo .rev-digitar button,
+.rev-jogo .rev-area > button:not(.sec) {
+  margin-top: .8rem;
+  font-family: var(--f-titulo);
+  font-weight: 700;
+  color: var(--noite);
+  background: var(--srwe);
+  border-color: var(--srwe);
+}
+
+.rev-jogo button.sec {
+  margin-top: .8rem;
+}
+
+.rev-jogo button.certo,
+.rev-jogo input.certo {
+  border-color: var(--ok);
+  box-shadow: 0 0 12px -4px var(--ok);
+  color: var(--ok);
+}
+
+.rev-jogo button.errado,
+.rev-jogo input.errado {
+  border-color: var(--erro);
+  box-shadow: 0 0 12px -4px var(--erro);
+  color: var(--erro);
+}
+
+.rev-opcoes,
+.rev-monte,
+.rev-grupos {
+  display: grid;
+  gap: .5rem;
+}
+
+.rev-monte,
+.rev-grupos {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+/* Ordenar: a pilha montada */
+.rev-montada {
+  margin: 0 0 .8rem;
+  padding: .6rem .8rem .6rem 2rem;
+  min-height: 2.6rem;
+  border: 1px dashed var(--linha);
+  border-radius: 8px;
+  display: grid;
+  gap: .3rem;
+  color: var(--ok);
+}
+
+.rev-montada:empty::before {
+  content: "Clique no primeiro item da ordem…";
+  color: var(--suave);
+  margin-left: -1.2rem;
+}
+
+.rev-peca.errado {
+  animation: tremer .3s;
+}
+
+@keyframes tremer {
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Memória */
+.rev-mesa {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: .5rem;
+}
+
+.rev-jogo .rev-carta {
+  min-height: 4.2rem;
+  text-align: center;
+  font: 700 1.3rem var(--f-titulo);
+  color: var(--itn);
+  background: repeating-linear-gradient(45deg, var(--painel), var(--painel) 6px, var(--painel2) 6px, var(--painel2) 12px);
+  transition: transform .2s;
+}
+
+.rev-jogo .rev-carta.aberta {
+  font: 600 .95rem var(--f-texto);
+  color: var(--tinta);
+  background: var(--painel);
+  border-color: var(--itn);
+  transform: scale(1.03);
+}
+
+.rev-jogo .rev-carta.par {
+  border-color: var(--ok);
+  color: var(--ok);
+  transform: none;
+}
+
+/* Bits */
+.rev-bits {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: .3rem;
+}
+
+.rev-jogo .rev-bit-botao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .2rem;
+  padding: .5rem .1rem;
+  text-align: center;
+}
+
+.rev-bit {
+  font: 700 1.5rem var(--f-mono);
+}
+
+.rev-peso {
+  font: 400 .75rem var(--f-mono);
+  color: var(--suave);
+}
+
+.rev-jogo .rev-bit-botao.ligado {
+  background: var(--itn);
+  border-color: var(--itn);
+  color: var(--noite);
+}
+
+.rev-jogo .rev-bit-botao.ligado .rev-peso {
+  color: var(--noite);
+}
+
+.rev-soma {
+  font: 400 .95rem var(--f-mono);
+  margin: .7rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+/* Digitar */
+.rev-digitar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: flex-end;
+}
+
+.rev-digitar input {
+  flex: 1 1 14rem;
+  min-width: 0;
+  font: 400 1rem var(--f-mono);
+  padding: .55rem .6rem;
+  color: var(--tinta);
+  background: var(--painel);
+  border: 1px solid var(--linha);
+  border-radius: 8px;
+}
+
+/* Terminal do IOS */
+.rev-missao {
+  font-weight: 600;
+  margin: 0 0 .5rem;
+}
+
+.rev-terminal {
+  font: 400 .92rem/1.5 var(--f-mono);
+  background: #05080c;
+  color: #d8f3dc;
+  padding: .8rem;
+  border-radius: 8px;
+  max-height: 16rem;
+  overflow-y: auto;
+  cursor: text;
+}
+
+.rev-historico div {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.rev-historico .rev-erro {
+  color: #ff8fa3;
+}
+
+.rev-linha {
+  display: flex;
+  align-items: baseline;
+}
+
+.rev-prompt {
+  white-space: nowrap;
+  color: #8be9fd;
+}
+
+.rev-linha input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  padding: 0 0 0 .4rem;
+  caret-color: #39ff14;
+}
+
+.rev-linha input:focus {
+  outline: none;
+}
+
+.rev-terminal:focus-within {
+  box-shadow: 0 0 0 2px var(--itn);
+}
+
+/* Retornos */
+.rev-exp {
+  margin: .7rem 0 0;
+}
+
+.rev-exp:empty {
+  display: none;
+}
+
+.rev-exp.ok {
+  color: var(--ok);
+}
+
+.rev-exp.no {
+  color: var(--erro);
+}
+
+.rev-final:not(:empty) {
+  margin-top: .8rem;
+  padding: .7rem .9rem;
+  border-left: 4px solid var(--srwe);
+  background: var(--painel);
+}
+
+.rev-final.ok {
+  border-color: var(--ok);
+}
+
+.rev-final strong {
+  color: var(--srwe);
+}
+
+.rev-final.ok strong {
+  color: var(--ok);
+}
+
+.rev-insignia {
+  margin: .5rem 0 0;
+  font-weight: 700;
+  color: var(--ensa);
+}
+
+.rev-depois {
+  margin-bottom: 1rem;
+}
+
+.rev-zerar {
+  font: inherit;
+  color: var(--suave);
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 520px) {
+  .rev-painel-numeros {
+    text-align: left;
+  }
+
+  .rev-bit {
+    font-size: 1.15rem;
+  }
+
+  .rev-estacao > summary,
+  .rev-corpo {
+    padding-left: .9rem;
+    padding-right: .9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rev-peca.errado {
+    animation: none;
+  }
+
+  .rev-jogo .rev-carta {
+    transition: none;
+  }
+}
+
+/* Botão "Pausar animações" (placa.js põe a classe pausado no <html>) */
+.pausado .rev-peca.errado {
+  animation: none;
+}
+
+.pausado .rev-jogo .rev-carta {
+  transition: none;
 }
