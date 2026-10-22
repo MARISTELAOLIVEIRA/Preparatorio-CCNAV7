@@ -1,4 +1,4 @@
-# Site do Preparatório CCNA — instruções para o Claude Code
+# Site do Preparatório CCNA — instruções do projeto
 
 Este repositório contém o site do preparatório CCNA da Profa. Maristela Oliveira (Academia Cisco da Faculdade de Tecnologia e Inovação Senac-DF), publicado no GitHub Pages. Ele também é o **modelo-base** para os sites das outras disciplinas e preparatórios dela.
 
