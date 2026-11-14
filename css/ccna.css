@@ -491,6 +491,12 @@ section {
   gap: 1rem;
 }
 
+/* botão do encontro vivo: ocupa a linha inteira */
+.trilha .corpo .vivo-link {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
 .trilha .corpo h4 {
   margin: .2rem 0;
   font: 600 .88rem var(--f-titulo);

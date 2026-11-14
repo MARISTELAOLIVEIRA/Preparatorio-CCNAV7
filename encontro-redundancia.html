@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Encontro vivo: redundância e segurança da LAN · CCNA · Profa. Maristela</title>
+<meta name="description" content="Encontro vivo do preparatório CCNA: EtherChannel, DHCP, HSRP e port security com analogias do dia a dia, termômetro da turma e desafio relâmpago.">
+<link rel="icon" href="assets/img/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<script src="assets/js/placa.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@100..125,400..900&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;500&display=swap">
+<!--
+  ============================================================
+  COMO EDITAR (Profa. Maristela)
+  - Esta página: o encontro vivo de SRWE (redundância, serviços e segurança da LAN).
+  - Simuladores, termômetro, desafio e visão da professora: js/encontro.js.
+  - Visual próprio desta página: css/encontro.css (o resto vem do estilo comum e do ccna.css).
+  ============================================================
+-->
+<link rel="stylesheet" href="assets/css/estilo.css">
+<link rel="stylesheet" href="assets/css/neon.css?v=5">
+<link rel="stylesheet" href="css/ccna.css?v=7">
+<link rel="stylesheet" href="css/encontro.css?v=1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+<script src="js/conta.js?v=4" defer></script>
+<script src="assets/js/matrix.js?v=3" defer></script>
+<script src="js/encontro.js?v=1" defer></script>
+</head>
+<body>
+<!-- ===================== BARRA DO TOPO (igual em todos os sites) ===================== -->
+<header class="barra">
+  <div class="envolve">
+    <div class="marcas">
+      <a class="marca-disc marca-logo" href="index.html" title="Página inicial do preparatório"><img src="assets/img/tec/cisco.svg" alt="Preparatório CCNA: página inicial" width="32" height="32"></a>
+    </div>
+    <button type="button" class="btn-menu" id="btn-menu" aria-expanded="false" aria-controls="menu">Menu</button>
+    <nav class="nav" id="menu" aria-label="Seções do encontro">
+      <a href="index.html">Início</a>
+      <a href="#termometro">Termômetro</a>
+      <a href="#etherchannel">EtherChannel</a>
+      <a href="#dhcp">DHCP</a>
+      <a href="#hsrp">HSRP</a>
+      <a href="#portsec">Port security</a>
+      <a href="#desafio">Desafio</a>
+    </nav>
+      <div class="ajustes">
+        <button type="button" id="btn-tema" aria-label="Mudar para o tema claro">
+          <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg class="lua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"/></svg>
+        </button>
+        <button type="button" id="btn-fonte" aria-label="Aumentar o tamanho do texto">A+</button>
+        <button type="button" id="btn-movimento" aria-pressed="false">
+          <svg class="pausar" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          <svg class="tocar" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
+          <span class="rotulo">Pausar animações</span>
+        </button>
+        <a class="marca" href="/" title="Portal da Stela">
+          <img src="assets/img/estrela.webp" alt="" width="26" height="24">
+          <span class="marca-texto">Stela</span>
+        </a>
+      </div>
+  </div>
+</header>
+
+<header class="hero hero-curto">
+  <canvas class="chuva-matrix" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <h1>Encontro vivo: a rede que <span class="neon">não para</span></h1>
+    <p class="quem"><span class="memoji" title="Profa. Maristela"><span class="memoji-brilho"><span class="memoji-hex"><span class="memoji-rosto"><img src="assets/memoji.png" alt="Memoji da Profa. Maristela" width="48" height="48"></span></span></span></span>&gt; Profa. Maristela_ · Academia Cisco · Senac-DF</p>
+    <p class="sub">SRWE · redundância, serviços e segurança da LAN. Quatro ideias que parecem difíceis e são do dia a dia: avenida, hotel, goleiro e porteiro. Bora?</p>
+  </div>
+</header>
+
+<main class="encontro">
+
+  <!-- ===================== ROTEIRO ===================== -->
+  <section id="roteiro">
+    <div class="wrap">
+      <ol class="ev-roteiro">
+        <li><strong>1.</strong> Termômetro: quanto você entende hoje?</li>
+        <li><strong>2.</strong> Quatro simuladores com analogias</li>
+        <li><strong>3.</strong> Desafio relâmpago: 10 questões</li>
+        <li><strong>4.</strong> Termômetro de novo: o que mudou?</li>
+      </ol>
+      <p class="ev-login" data-aviso-login>Entre com a sua conta (botão <strong>Entrar</strong>, lá em cima) para a professora ver o seu termômetro e o seu desafio. Sem login, tudo funciona, mas fica só no seu navegador.</p>
+    </div>
+  </section>
+
+  <!-- ===================== TERMÔMETRO (ANTES) ===================== -->
+  <section class="ev-alt" id="termometro">
+    <div class="wrap">
+      <span class="olho">T1 · termômetro</span>
+      <h2>Quanto você entende hoje?</h2>
+      <p class="intro">Sem vergonha: ninguém vê a nota de ninguém, só a professora, para saber onde caprichar. 1 = "nunca ouvi falar"; 5 = "explico para um colega".</p>
+      <div class="ev-termometro" data-termometro="antes"></div>
+    </div>
+  </section>
+
+  <!-- ===================== ETHERCHANNEL ===================== -->
+  <section id="etherchannel">
+    <div class="wrap">
+      <span class="olho">E1 · EtherChannel</span>
+      <h2>Várias pistas viram uma avenida 🛣️</h2>
+      <p class="intro">Você ligou <strong>4 cabos</strong> entre dois switches para ter mais velocidade. Só que o <strong>STP</strong> (o guarda de trânsito que evita loop) fecha 3 pistas, com medo de os carros andarem em círculo. O <strong>EtherChannel</strong> junta as 4 numa avenida só: o STP enxerga um caminho e libera tudo.</p>
+      <div class="ev-sim cartao" data-sim="etherchannel">
+        <div class="ev-controles">
+          <label class="ev-chave"><input type="checkbox" data-ec-canal> Juntar em EtherChannel</label>
+          <button type="button" class="botao" data-ec-enviar>Mandar 12 carros 🚗</button>
+          <button type="button" class="botao contorno" data-ec-cortar>Cortar um cabo ✂️</button>
+          <button type="button" class="botao contorno" data-ec-reset>Recomeçar</button>
+        </div>
+        <div class="ec-cena">
+          <div class="ec-sw">S1<small>switch</small></div>
+          <div class="ec-pistas" data-ec-pistas></div>
+          <div class="ec-sw">S2<small>switch</small></div>
+        </div>
+        <p class="ev-fala" data-ec-fala aria-live="polite">Aperte "Mandar 12 carros" e veja o engarrafamento.</p>
+        <pre class="ev-cli" data-ec-cli></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DHCP ===================== -->
+  <section class="ev-alt" id="dhcp">
+    <div class="wrap">
+      <span class="olho">D1 · DHCP</span>
+      <h2>A recepção do hotel 🏨</h2>
+      <p class="intro">Um computador novo chega na rede como um hóspede chega no hotel: sem quarto (sem endereço IP). O <strong>servidor DHCP</strong> é a recepção: oferece um quarto livre, confirma e entrega a chave. São 4 mensagens, o famoso <strong>DORA</strong>.</p>
+      <div class="ev-sim cartao" data-sim="dhcp">
+        <div class="ev-controles">
+          <button type="button" class="botao" data-dh-passo>Próximo passo ▶</button>
+          <button type="button" class="botao contorno" data-dh-reset>Recomeçar</button>
+        </div>
+        <div class="dh-cena">
+          <div class="dh-ator">💻<strong>Hóspede</strong><small data-dh-ip>IP: ainda não tem</small></div>
+          <div class="dh-meio" data-dh-meio></div>
+          <div class="dh-ator">🛎️<strong>Recepção</strong><small>servidor DHCP</small></div>
+        </div>
+        <ol class="dh-dora" data-dh-dora>
+          <li data-p="1"><b>D</b>iscover</li><li data-p="2"><b>O</b>ffer</li><li data-p="3"><b>R</b>equest</li><li data-p="4"><b>A</b>ck</li>
+        </ol>
+        <div class="dh-quartos" data-dh-quartos></div>
+        <p class="ev-fala" data-dh-fala aria-live="polite">O hóspede acabou de chegar. Aperte "Próximo passo".</p>
+        <pre class="ev-cli" data-dh-cli></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HSRP ===================== -->
+  <section id="hsrp">
+    <div class="wrap">
+      <span class="olho">H1 · HSRP</span>
+      <h2>O goleiro reserva ⚽</h2>
+      <p class="intro">O <strong>gateway</strong> é a saída da rede para a internet. Se ele cai, todo mundo fica sem internet. No <strong>HSRP</strong>, dois roteadores dividem uma "camisa de goleiro": um IP virtual. O titular (<strong>ativo</strong>) defende; o reserva (<strong>standby</strong>) fica no banco, de olho. Se o titular se machuca, o reserva veste a camisa e o jogo continua.</p>
+      <div class="ev-sim cartao" data-sim="hsrp">
+        <div class="ev-controles">
+          <button type="button" class="botao" data-hs-derruba>Lesão no titular 🤕 (desligar R1)</button>
+          <button type="button" class="botao contorno" data-hs-volta>R1 voltou do médico</button>
+          <label class="ev-chave"><input type="checkbox" data-hs-preempt> preempt (o titular pede a camisa de volta)</label>
+        </div>
+        <div class="hs-cena">
+          <div class="hs-pcs">🖥️🖥️🖥️<small>PCs · gateway = 192.168.1.254 (a camisa)</small></div>
+          <div class="hs-gols">
+            <div class="hs-r" data-hs-r1><strong>R1</strong><small>prioridade 110</small><span data-hs-e1>🧤 ATIVO</span></div>
+            <div class="hs-r" data-hs-r2><strong>R2</strong><small>prioridade 100</small><span data-hs-e2>🪑 standby</span></div>
+          </div>
+        </div>
+        <p class="hs-ping" data-hs-ping aria-label="Pings para a internet"></p>
+        <p class="ev-fala" data-hs-fala aria-live="polite">Os PCs estão "pingando" a internet pelo goleiro titular. Tente derrubar o R1.</p>
+        <pre class="ev-cli" data-hs-cli></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PORT SECURITY ===================== -->
+  <section class="ev-alt" id="portsec">
+    <div class="wrap">
+      <span class="olho">P1 · port security</span>
+      <h2>O porteiro que conhece os crachás 🪪</h2>
+      <p class="intro">Cada porta do switch pode ter um <strong>porteiro</strong>. Ele decora o crachá (o endereço <strong>MAC</strong>) de quem pode entrar. Se alguém estranho plugar um notebook na tomada da parede, o porteiro reage do jeito que você mandou: <strong>shutdown</strong>, <strong>restrict</strong> ou <strong>protect</strong>.</p>
+      <div class="ev-sim cartao" data-sim="portsec">
+        <div class="ev-controles">
+          <label>Modo de violação
+            <select data-ps-modo>
+              <option value="shutdown">shutdown: fecha o prédio todo</option>
+              <option value="restrict">restrict: barra e anota no livro</option>
+              <option value="protect">protect: barra calado</option>
+            </select>
+          </label>
+          <button type="button" class="botao" data-ps-ana>Ana pluga o notebook dela 👩‍💻</button>
+          <button type="button" class="botao contorno" data-ps-estranho>Estranho pluga outro notebook 🕵️</button>
+          <button type="button" class="botao contorno" data-ps-religar>Religar a porta</button>
+        </div>
+        <div class="ps-cena">
+          <div class="ps-porta" data-ps-porta><span class="ps-led"></span>Fa0/5<small data-ps-estado>porta ligada</small></div>
+          <div class="ps-livro"><strong>Crachás permitidos</strong><span>AA:AA:AA:11:11:11 (Ana)</span><small>maximum 1 · sticky</small>
+            <strong>Livro de ocorrências</strong><span data-ps-contador>violações: 0</span></div>
+        </div>
+        <p class="ev-fala" data-ps-fala aria-live="polite">A Ana trabalha nessa mesa. Um estranho vai tentar usar a tomada dela.</p>
+        <pre class="ev-cli" data-ps-cli></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DESAFIO ===================== -->
+  <section id="desafio">
+    <div class="wrap">
+      <span class="olho">R1 · desafio relâmpago</span>
+      <h2>10 questões, sem pegadinha cruel ⚡</h2>
+      <p class="intro">Uma de cada vez. Errou? Calma: a explicação aparece na hora. É treino, não prova.</p>
+      <div class="ev-desafio cartao" data-desafio aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ===================== TERMÔMETRO (DEPOIS) ===================== -->
+  <section class="ev-alt" id="termometro-depois">
+    <div class="wrap">
+      <span class="olho">T2 · termômetro de novo</span>
+      <h2>E agora, quanto você entende?</h2>
+      <p class="intro">Marque de novo, com sinceridade. A professora compara o antes e o depois para saber o que já fez sentido e o que precisa voltar.</p>
+      <div class="ev-termometro" data-termometro="depois"></div>
+    </div>
+  </section>
+
+  <!-- ===================== VISÃO DA PROFESSORA (só aparece para a conta de professora) ===================== -->
+  <section id="professora" hidden>
+    <div class="wrap">
+      <span class="olho">PF · visão da professora</span>
+      <h2>Como a turma está</h2>
+      <p class="intro"><button type="button" class="botao contorno" data-pf-atualizar>Atualizar agora</button> <span class="ev-nota" data-pf-hora></span></p>
+      <div data-pf></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="envolve"><img src="assets/img/coracao.webp" alt="" width="30" height="28"><span>Preparatório CCNA · Academia Cisco da Faculdade de Tecnologia e Inovação Senac-DF · Profa. Maristela Oliveira · Feito com ♥ e sucata eletrônica · <a href="/">Portal da Stela</a></span></div>
+</footer>
+</body>
+</html>

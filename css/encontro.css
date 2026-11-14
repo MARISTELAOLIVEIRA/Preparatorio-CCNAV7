@@ -1,0 +1,714 @@
+/* ==============================================================
+   ENCONTRO VIVO (encontro-redundancia.html) · versão 1 · 2026-11-13
+   Índice: 1. Base · 2. Termômetro · 3. EtherChannel · 4. DHCP · 5. HSRP
+           6. Port security · 7. Desafio · 8. Visão da professora · 9. Pausa e telas pequenas
+   ============================================================== */
+
+/* 1. Base ------------------------------------------------------- */
+
+.ev-alt {
+  background: color-mix(in srgb, var(--fundo-2) 85%, transparent);
+}
+
+.ev-roteiro {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: .7rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.ev-roteiro li {
+  padding: .8rem 1rem;
+  border: 1px solid var(--borda-forte);
+  border-radius: 14px;
+  background: var(--superficie);
+}
+
+.ev-login {
+  margin: 0;
+  padding: .7rem 1rem;
+  border-left: 4px solid var(--neon);
+  border-radius: 10px;
+  background: var(--superficie);
+}
+
+.ev-nota {
+  color: var(--texto-2);
+  font-size: .9rem;
+}
+
+.ev-sim {
+  margin-top: 1rem;
+}
+
+.ev-controles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  align-items: center;
+}
+
+.ev-chave {
+  display: inline-flex;
+  gap: .4rem;
+  align-items: center;
+  font-weight: 700;
+}
+
+.ev-controles select {
+  margin-left: .3rem;
+  padding: .4rem .5rem;
+  border-radius: 8px;
+  border: 1px solid var(--borda-forte);
+  background: var(--superficie);
+  color: var(--texto);
+  font: inherit;
+}
+
+.ev-fala {
+  margin: .8rem 0 0;
+  padding: .8rem 1rem;
+  border-radius: 12px;
+  background: var(--superficie-2);
+  border: 1px solid var(--borda-forte);
+  min-height: 3em;
+}
+
+.ev-cli {
+  margin: .6rem 0 0;
+  padding: .7rem .9rem;
+  border-radius: 10px;
+  background: var(--chip);
+  color: #9fffcb;
+  font: .8rem/1.5 var(--f-mono);
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.ev-cli:empty {
+  display: none;
+}
+
+
+/* 2. Termômetro --------------------------------------------------- */
+
+.ev-termometro {
+  display: grid;
+  gap: .6rem;
+  margin-top: 1rem;
+}
+
+.tm-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: .6rem .9rem;
+  border-radius: 14px;
+  border: 1px solid var(--borda-forte);
+  background: var(--superficie);
+}
+
+.tm-tema {
+  font-weight: 700;
+  min-width: 10rem;
+}
+
+.tm-notas {
+  display: flex;
+  gap: .35rem;
+}
+
+.tm-notas button {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3.2rem;
+  border-radius: 12px;
+  border: 2px solid var(--borda-forte);
+  background: transparent;
+  color: var(--texto);
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: transform .15s, border-color .15s;
+}
+
+.tm-notas button small {
+  font: .65rem var(--f-mono);
+  color: var(--texto-2);
+}
+
+.tm-notas button:hover {
+  transform: translateY(-2px);
+}
+
+.tm-notas button[aria-pressed="true"] {
+  border-color: var(--neon);
+  background: color-mix(in srgb, var(--neon) 18%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--neon) 45%, transparent);
+}
+
+
+/* 3. EtherChannel ------------------------------------------------- */
+
+.ec-cena {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr) 5rem;
+  gap: .6rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.ec-sw {
+  display: grid;
+  place-items: center;
+  height: 9rem;
+  border-radius: 12px;
+  background: #1f6fb5;
+  color: #fff;
+  font: 800 1.2rem var(--f-titulo);
+}
+
+.ec-sw small {
+  font: .7rem var(--f-mono);
+  opacity: .8;
+}
+
+.ec-pistas {
+  display: grid;
+  gap: .35rem;
+}
+
+.ec-pista {
+  position: relative;
+  height: 1.9rem;
+  border-radius: 6px;
+  background: repeating-linear-gradient(90deg, #3a3f45 0 22px, #f5d76e 22px 34px, #3a3f45 34px 56px);
+  background-size: 100% 3px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #3a3f45;
+  overflow: hidden;
+}
+
+.ec-pista.avenida {
+  box-shadow: inset 0 0 0 2px #39ff9e;
+}
+
+.ec-pista.bloqueada {
+  background-color: #5a2a2a;
+  opacity: .75;
+}
+
+.ec-pista.cortada {
+  background-color: #2a2a2a;
+  opacity: .5;
+}
+
+.ec-rotulo {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font: 700 .8rem var(--f-mono);
+}
+
+.ec-carro {
+  position: absolute;
+  top: .1rem;
+  left: -2rem;
+  font-size: 1.3rem;
+  animation: ec-anda .9s linear forwards;
+}
+
+@keyframes ec-anda {
+  to { left: 100%; }
+}
+
+
+/* 4. DHCP ------------------------------------------------------- */
+
+.dh-cena {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr) 8rem;
+  gap: .6rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.dh-ator {
+  display: grid;
+  place-items: center;
+  gap: .1rem;
+  padding: .8rem .4rem;
+  border-radius: 14px;
+  border: 1px solid var(--borda-forte);
+  background: var(--superficie);
+  font-size: 2rem;
+  text-align: center;
+}
+
+.dh-ator strong {
+  font-size: .95rem;
+}
+
+.dh-ator small {
+  font: .7rem var(--f-mono);
+  color: var(--texto-2);
+}
+
+.dh-meio {
+  position: relative;
+  min-height: 4rem;
+  display: grid;
+  align-items: center;
+}
+
+.dh-balao {
+  justify-self: center;
+  padding: .6rem 1rem;
+  border-radius: 999px;
+  background: var(--neon);
+  color: #111;
+  font-weight: 700;
+  animation: dh-vai .7s ease-out;
+}
+
+.dh-balao.volta {
+  background: var(--neon-2, #39ff9e);
+  animation-name: dh-volta;
+}
+
+@keyframes dh-vai {
+  from { transform: translateX(-40%); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@keyframes dh-volta {
+  from { transform: translateX(40%); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.dh-dora {
+  display: flex;
+  gap: .4rem;
+  margin: .8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dh-dora li {
+  flex: 1;
+  padding: .4rem;
+  border-radius: 8px;
+  border: 1px solid var(--borda-forte);
+  text-align: center;
+  font: .85rem var(--f-mono);
+  color: var(--texto-2);
+}
+
+.dh-dora li.feito {
+  border-color: var(--neon);
+  color: var(--texto);
+  background: color-mix(in srgb, var(--neon) 15%, transparent);
+}
+
+.dh-dora b {
+  font-size: 1.1rem;
+  color: var(--neon);
+}
+
+.dh-quartos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  align-items: center;
+  margin-top: .8rem;
+  font-size: .85rem;
+}
+
+.dh-quartos small {
+  flex-basis: 100%;
+  color: var(--texto-2);
+}
+
+.dh-quarto {
+  padding: .2rem .4rem;
+  border-radius: 6px;
+  font: .75rem var(--f-mono);
+  border: 1px solid var(--borda-forte);
+}
+
+.dh-quarto.reservado {
+  background: var(--superficie-2);
+  color: var(--texto-3);
+}
+
+.dh-quarto.ocupado {
+  background: #39ff9e;
+  color: #111;
+  font-weight: 700;
+}
+
+
+/* 5. HSRP ------------------------------------------------------- */
+
+.hs-cena {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.hs-pcs {
+  display: grid;
+  gap: .3rem;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.hs-pcs small {
+  font: .75rem var(--f-mono);
+  color: var(--texto-2);
+}
+
+.hs-gols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .6rem;
+}
+
+.hs-r {
+  display: grid;
+  gap: .2rem;
+  padding: .8rem;
+  border-radius: 14px;
+  border: 2px solid var(--borda-forte);
+  background: var(--superficie);
+  text-align: center;
+  transition: border-color .3s, opacity .3s, box-shadow .3s;
+}
+
+.hs-r strong {
+  font: 800 1.3rem var(--f-titulo);
+}
+
+.hs-r small {
+  font: .7rem var(--f-mono);
+  color: var(--texto-2);
+}
+
+.hs-r.ativo {
+  border-color: #39ff9e;
+  box-shadow: 0 0 16px color-mix(in srgb, #39ff9e 45%, transparent);
+}
+
+.hs-r.caido {
+  opacity: .45;
+  border-style: dashed;
+}
+
+.hs-ping {
+  margin: .8rem 0 0;
+  font: .9rem var(--f-mono);
+  overflow-wrap: anywhere;
+}
+
+.hs-ping .ok {
+  color: #39ff9e;
+}
+
+.hs-ping .nao {
+  color: #ff5c5c;
+}
+
+
+/* 6. Port security ----------------------------------------------- */
+
+.ps-cena {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.ps-porta {
+  display: grid;
+  place-items: center;
+  gap: .3rem;
+  padding: 1rem .5rem;
+  border-radius: 14px;
+  background: #1f6fb5;
+  color: #fff;
+  font: 800 1.1rem var(--f-mono);
+  text-align: center;
+}
+
+.ps-porta small {
+  font: .7rem var(--f-mono);
+  opacity: .85;
+}
+
+.ps-led {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #39ff9e;
+  box-shadow: 0 0 10px #39ff9e;
+  animation: ps-pisca 1.4s ease-in-out infinite;
+}
+
+.ps-porta.errdisabled {
+  background: #4a4a4a;
+}
+
+.ps-porta.errdisabled .ps-led {
+  background: #ff9f43;
+  box-shadow: none;
+  animation: none;
+}
+
+@keyframes ps-pisca {
+  50% { opacity: .35; }
+}
+
+.ps-livro {
+  display: grid;
+  gap: .25rem;
+  padding: .8rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--borda-forte);
+  background: var(--superficie);
+  font-size: .9rem;
+}
+
+.ps-livro span {
+  font-family: var(--f-mono);
+}
+
+.ps-livro small {
+  color: var(--texto-2);
+  margin-bottom: .4rem;
+}
+
+
+/* 7. Desafio ------------------------------------------------------ */
+
+.ev-desafio h3 {
+  margin: .3rem 0 .8rem;
+  font-size: 1.15rem;
+}
+
+.ev-placar {
+  margin: 0;
+  font: .8rem var(--f-mono);
+  color: var(--texto-2);
+}
+
+.ev-alts {
+  display: grid;
+  gap: .5rem;
+}
+
+.ev-alts button {
+  padding: .7rem .9rem;
+  border-radius: 12px;
+  border: 2px solid var(--borda-forte);
+  background: var(--superficie);
+  color: var(--texto);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ev-alts button b {
+  margin-right: .4rem;
+  color: var(--neon);
+}
+
+.ev-alts button:hover:not(:disabled) {
+  border-color: var(--neon);
+}
+
+.ev-alts button.certa {
+  border-color: #39ff9e;
+  background: color-mix(in srgb, #39ff9e 16%, transparent);
+}
+
+.ev-alts button.errada {
+  border-color: #ff5c5c;
+  background: color-mix(in srgb, #ff5c5c 14%, transparent);
+}
+
+.ev-fala-stela {
+  display: flex;
+  gap: .8rem;
+  align-items: flex-start;
+  margin: .9rem 0;
+  padding: .8rem 1rem;
+  border-radius: 16px;
+  background: var(--superficie-2);
+  border: 1px solid var(--borda-forte);
+  animation: ev-abre .35s ease-out;
+}
+
+.ev-fala-stela p {
+  margin: 0;
+}
+
+.ev-memoji {
+  width: 64px;
+  height: auto;
+  flex: none;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .35));
+}
+
+.ev-fim {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.ev-fim .ev-memoji {
+  width: 110px;
+  animation: ev-pula .9s ease-out both;
+}
+
+.ev-nota-grande {
+  margin: 0;
+  font: 900 3rem/1 var(--f-titulo);
+  color: var(--neon);
+}
+
+@keyframes ev-abre {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ev-pula {
+  0% { transform: scale(.3) rotate(-12deg); opacity: 0; }
+  70% { transform: scale(1.08) rotate(3deg); opacity: 1; }
+  100% { transform: none; }
+}
+
+
+/* 8. Visão da professora ------------------------------------------- */
+
+[data-pf] {
+  display: grid;
+  gap: 1rem;
+}
+
+.pf-tema {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  gap: .6rem;
+  align-items: center;
+  margin: .4rem 0;
+}
+
+.pf-tema > div {
+  display: grid;
+  gap: .25rem;
+}
+
+.pf-barra {
+  display: block;
+  width: calc(var(--p) * 1%);
+  min-width: 2.4rem;
+  padding: .1rem .4rem;
+  border-radius: 6px;
+  font: .75rem var(--f-mono);
+  color: #111;
+}
+
+.pf-barra.antes,
+.pf-leg.antes {
+  background: #ff9f43;
+}
+
+.pf-barra.depois,
+.pf-leg.depois {
+  background: #39ff9e;
+}
+
+.pf-leg {
+  display: inline-block;
+  width: .9rem;
+  height: .9rem;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+.pf-tabela {
+  overflow-x: auto;
+}
+
+.pf-tabela table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9rem;
+}
+
+.pf-tabela th,
+.pf-tabela td {
+  padding: .45rem .5rem;
+  border-bottom: 1px solid var(--borda);
+  text-align: left;
+  white-space: nowrap;
+}
+
+
+/* 9. Pausa e telas pequenas ----------------------------------------- */
+
+.pausado .ec-carro,
+.pausado .dh-balao,
+.pausado .ps-led,
+.pausado .ev-fala-stela,
+.pausado .ev-fim .ev-memoji {
+  animation: none;
+}
+
+.pausado .ec-carro {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ec-carro,
+  .dh-balao,
+  .ps-led,
+  .ev-fala-stela,
+  .ev-fim .ev-memoji {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .ec-cena {
+    grid-template-columns: 3.4rem minmax(0, 1fr) 3.4rem;
+  }
+
+  .dh-cena {
+    grid-template-columns: 5.5rem minmax(0, 1fr) 5.5rem;
+  }
+
+  .hs-cena,
+  .ps-cena {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tm-notas button {
+    width: 2.6rem;
+  }
+
+  .ev-fim {
+    flex-direction: column;
+    text-align: center;
+  }
+}

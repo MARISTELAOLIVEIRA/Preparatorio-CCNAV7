@@ -72,6 +72,7 @@ const ENCONTROS = [
   },
   {
     d: "2026-11-14", c: "SRWE", t: "Redundância, serviços e segurança da LAN",
+    vivo: "encontro-redundancia.html",   // página do encontro vivo (simuladores, termômetro e desafio)
     lab: ["EtherChannel", "DHCP, HSRP e port security"],
     des: ["Corrida de comandos de segurança"],
     casa: ["Fim do SRWE e ENSA 1 a 5", "Labs de rotas estáticas, OSPF e ACLs no Packet Tracer", "Gravação do encontro no Teams"],

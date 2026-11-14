@@ -101,6 +101,7 @@ const listaHtml = (itens) => "<ul>" + itens.map((x) => `<li>${x}</li>`).join("")
           <span class="tag">${e.c}</span>
         </summary>
         <div class="corpo">
+          ${e.vivo ? `<p class="vivo-link"><a class="botao" href="${e.vivo}">⚡ Abrir o encontro vivo</a></p>` : ""}
           <div><h4>Laboratório</h4>${listaHtml(e.lab)}</div>
           <div><h4>Desafio</h4>${listaHtml(e.des)}</div>
           <div><h4>Para a quinzena</h4>${listaHtml(e.casa)}</div>
@@ -141,6 +142,7 @@ const listaHtml = (itens) => "<ul>" + itens.map((x) => `<li>${x}</li>`).join("")
     <div>
       <h3>Encontro ${idx + 1}: ${e.t}</h3>
       <p>No laboratório: ${e.lab.join("; ")}. Desafio: ${e.des.join(" e ")}.</p>
+      ${e.vivo ? `<p><a class="botao" href="${e.vivo}">⚡ Abrir o encontro vivo</a></p>` : ""}
       ${antesDeVir}
     </div>`;
 })();
